@@ -76,7 +76,7 @@ const currentPath = Astro.url.pathname
   <!-- Mobile overlay menu -->
   <div
     id="mobile-menu"
-    class="fixed inset-0 top-[var(--nav-height)] bg-[var(--color-bg-primary)] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
+    class="fixed inset-0 top-[var(--nav-height)] z-40 bg-[var(--color-bg-primary)] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
   >
     <nav class="flex flex-col items-start justify-center h-full gap-5 pl-10 pr-4 overflow-y-auto">
       {NAV_LINKS.map((link, i) => {
@@ -155,10 +155,9 @@ const currentPath = Astro.url.pathname
     })
   }
 
-  document.addEventListener('DOMContentLoaded', () => {
-    setupTheme()
-    setupMobileMenu()
-  })
+  // Module scripts are deferred, DOM is ready
+  setupTheme()
+  setupMobileMenu()
 
   document.addEventListener('astro:page-load', () => {
     setupTheme()
