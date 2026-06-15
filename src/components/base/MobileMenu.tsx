@@ -80,7 +80,7 @@ export default function MobileMenu() {
                 setIsOpen(true)
               }
             }}
-            className="fixed top-1/2 right-0 -translate-y-1/2 w-12 h-28 bg-gradient-to-b from-rose-400 via-accent-400 to-sky-400 backdrop-blur-xl rounded-l-full shadow-[-5px_0_20px_rgba(139,116,247,0.4)] z-[60] flex items-center justify-center border-y border-l border-white/30 touch-none"
+            className="fixed top-1/2 right-0 -translate-y-1/2 w-12 h-28 bg-gradient-to-b from-rose-400 via-accent-400 to-sky-400 backdrop-blur-xl rounded-l-full shadow-[-5px_0_20px_rgba(244,114,158,0.5)] z-[60] flex items-center justify-center border-y border-l border-white/30 touch-none"
           >
             <div className="flex flex-col gap-1.5 items-center justify-center mr-2">
               <div className="w-1.5 h-1.5 bg-white/90 rounded-full" />
@@ -122,7 +122,7 @@ export default function MobileMenu() {
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 border-4 border-slate-300 dark:border-slate-500 flex items-center justify-center shadow-inner z-10">
                   <button
                     onClick={() => setIsOpen(false)}
-                    className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 flex items-center justify-center text-white font-black shadow-lg hover:from-red-400 hover:to-red-500 hover:rotate-90 transition-all duration-300 active:scale-95"
+                    className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 flex items-center justify-center text-white font-black shadow-lg shadow-rose-400/30 hover:shadow-rose-400/50 hover:rotate-90 transition-all duration-300 active:scale-95"
                   >
                     <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                       <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
@@ -149,8 +149,8 @@ export default function MobileMenu() {
                           onClick={() => setIsOpen(false)}
                           className={`flex items-center justify-center w-full h-full rounded-full transition-all duration-300 ${
                             isActive
-                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_15px_rgba(139,116,247,0.6)] scale-110'
-                              : 'bg-white/90 dark:bg-slate-800 text-slate-800 dark:text-slate-200 shadow-md hover:scale-110 border border-white/50 dark:border-slate-600'
+                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_15px_rgba(244,114,158,0.5)] scale-110'
+                              : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 shadow-md hover:scale-110 border border-rose-200/50 dark:border-slate-600 hover:border-rose-300 dark:hover:border-rose-400/30 hover:shadow-rose-200/30'
                           }`}
                         >
                           <span className="text-[11px] font-black">{link.name}</span>
