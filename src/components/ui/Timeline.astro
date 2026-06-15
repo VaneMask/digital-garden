@@ -25,7 +25,7 @@ function formatDate(date: Date): string {
   <!-- Timeline line -->
   <div class="absolute left-4 md:left-1/2 top-0 bottom-0 w-px bg-[var(--color-border)] md:-translate-x-px" />
 
-  <div class="space-y-12">
+  <div class="space-y-8 md:space-y-12">
     {items.map((item) => (
       <div class="relative flex items-start gap-6 md:gap-0">
         <!-- Date -->
@@ -39,7 +39,7 @@ function formatDate(date: Date): string {
         <div class="absolute left-4 md:left-1/2 w-3 h-3 rounded-full bg-[var(--color-accent)] border-2 border-[var(--color-bg-primary)] -translate-x-1/2 mt-1.5 z-10" />
 
         <!-- Content -->
-        <div class="md:w-1/2 md:pl-12 ml-10 md:ml-0">
+        <div class="md:w-1/2 md:pl-12 ml-8 md:ml-0">
           {/* Mobile date */}
           <time datetime={item.date.toISOString()} class="text-xs text-[var(--color-text-muted)] mb-2 block md:hidden">
             {formatDate(item.date)}

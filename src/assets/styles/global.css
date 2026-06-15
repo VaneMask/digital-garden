@@ -185,7 +185,13 @@
 
   @media (max-width: 768px) {
     .section-container {
-      padding: 3rem 1.25rem;
+      padding: 2.5rem 1rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .section-container {
+      padding: 2rem 0.875rem;
     }
   }
 
@@ -193,6 +199,12 @@
     max-width: 768px;
     margin: 0 auto;
     padding: 0 1.5rem;
+  }
+
+  @media (max-width: 768px) {
+    .prose-container {
+      padding: 0 1rem;
+    }
   }
 }
 

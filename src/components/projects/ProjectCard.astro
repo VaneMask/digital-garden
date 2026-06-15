@@ -17,9 +17,9 @@ const { title, description, summary, coverImage, techTags, githubUrl, date, slug
 const displayDate = new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long' }).format(date)
 ---
 
-<a href={`/projects/${slug}`} class="group block glass-card overflow-hidden">
+<a href={`/projects/${slug}`} class="group block glass-card overflow-hidden p-4 md:p-6">
   {/* Cover image area */}
-  <div class="aspect-video -mx-6 -mt-6 mb-5 bg-gradient-to-br from-accent-100 to-accent-50 dark:from-accent-500/10 dark:to-accent-400/5 overflow-hidden">
+  <div class="aspect-video -mx-4 md:-mx-6 -mt-4 md:-mt-6 mb-4 md:mb-5 bg-gradient-to-br from-accent-100 to-accent-50 dark:from-accent-500/10 dark:to-accent-400/5 overflow-hidden">
     {coverImage ? (
       <img src={coverImage} alt={title} class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
     ) : (
