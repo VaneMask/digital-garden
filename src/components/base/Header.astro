@@ -87,7 +87,31 @@ const currentPath = Astro.url.pathname
     updateIcons()
   }
 
-  setupTheme()
+  // Scroll-aware nav background
+  function setupNavScroll() {
+    const header = document.getElementById('site-header')
+    if (!header) return
 
-  document.addEventListener('astro:page-load', setupTheme)
+    const updateNav = () => {
+      const scrolled = window.scrollY > 20
+      if (scrolled) {
+        header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.06)'
+        header.classList.add('dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)]')
+      } else {
+        header.style.boxShadow = ''
+        header.classList.remove('dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)]')
+      }
+    }
+
+    window.addEventListener('scroll', updateNav, { passive: true })
+    updateNav()
+  }
+
+  setupTheme()
+  setupNavScroll()
+
+  document.addEventListener('astro:page-load', () => {
+    setupTheme()
+    setupNavScroll()
+  })
 </script>
