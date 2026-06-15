@@ -114,7 +114,7 @@ export default function MobileMenu() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-gradient-to-br from-rose-900/50 via-slate-900/60 to-sky-900/50 backdrop-blur-md z-[65]"
+              className="fixed inset-0 bg-gradient-to-br from-rose-950/40 via-slate-950/50 to-sky-950/40 backdrop-blur-xl z-[65]"
             />
 
             {/* Wheel */}
@@ -129,10 +129,10 @@ export default function MobileMenu() {
                 ref={wheelRef}
                 style={{ rotate: smoothRotation }}
                 onPan={handlePan}
-                className="w-full h-full rounded-full border border-rose-200/30 dark:border-accent-400/20 bg-white/40 dark:bg-slate-800/50 backdrop-blur-3xl shadow-[0_0_60px_rgba(244,114,158,0.15)] relative cursor-grab active:cursor-grabbing touch-none"
+                className="w-full h-full rounded-full border border-white/40 dark:border-white/[0.06] bg-white/20 dark:bg-white/[0.03] backdrop-blur-3xl shadow-[0_0_80px_rgba(244,114,158,0.12),0_0_30px_rgba(56,189,248,0.08)] relative cursor-grab active:cursor-grabbing touch-none"
               >
                 {/* Center close button */}
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 border-4 border-slate-300 dark:border-slate-500 flex items-center justify-center shadow-inner z-10">
+                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-white/40 dark:bg-white/5 backdrop-blur-xl border-2 border-white/50 dark:border-white/10 flex items-center justify-center shadow-lg z-10">
                   <button
                     onClick={() => setIsOpen(false)}
                     className="w-12 h-12 rounded-full bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 flex items-center justify-center text-white font-black shadow-lg shadow-rose-400/30 hover:shadow-rose-400/50 hover:rotate-90 transition-all duration-300 active:scale-95"
@@ -162,8 +162,8 @@ export default function MobileMenu() {
                           onClick={() => setIsOpen(false)}
                           className={`flex items-center justify-center w-full h-full rounded-full transition-all duration-300 ${
                             isActive
-                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_18px_rgba(244,114,158,0.45)] scale-110'
-                              : 'bg-white/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 shadow-sm hover:scale-110 border border-white/60 dark:border-slate-600/50 hover:border-accent-300/50 dark:hover:border-accent-400/30 hover:shadow-lg hover:shadow-rose-200/20 dark:hover:shadow-rose-900/10'
+                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_20px_rgba(244,114,158,0.5)] scale-110'
+                              : 'bg-white/30 dark:bg-white/5 backdrop-blur-md text-slate-700 dark:text-slate-200 shadow-md hover:scale-110 border border-white/50 dark:border-white/[0.08] hover:border-rose-300/60 dark:hover:border-rose-400/25 hover:bg-white/50 dark:hover:bg-white/10 hover:shadow-xl hover:shadow-rose-300/25 dark:hover:shadow-rose-500/10'
                           }`}
                         >
                           <span className="text-[11px] font-black">{link.name}</span>
@@ -181,7 +181,7 @@ export default function MobileMenu() {
                 exit={{ opacity: 0, y: 20 }}
                 transition={{ delay: 0.3 }}
                 onClick={toggleTheme}
-                className="absolute bottom-16 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-rose-200/30 dark:border-accent-400/20 shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300 hover:scale-110 transition-all active:scale-95"
+                className="absolute bottom-16 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white/25 dark:bg-white/5 backdrop-blur-xl border border-white/40 dark:border-white/[0.06] shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300 hover:scale-110 hover:bg-white/40 dark:hover:bg-white/10 transition-all active:scale-95"
               >
                 {isDark ? (
                   <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
