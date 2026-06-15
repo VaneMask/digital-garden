@@ -78,14 +78,14 @@ const currentPath = Astro.url.pathname
     id="mobile-menu"
     class="fixed inset-0 top-[var(--nav-height)] bg-[var(--color-bg-primary)] opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"
   >
-    <nav class="flex flex-col items-center justify-center h-full gap-6 -mt-16">
+    <nav class="flex flex-col items-center justify-center h-full gap-5 px-4 overflow-y-auto pt-[var(--nav-height)]">
       {NAV_LINKS.map((link, i) => {
         const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
         return (
           <a
             href={link.href}
             class:list={[
-              'text-2xl font-medium transition-all duration-200 hover:text-[var(--color-accent)]',
+              'text-xl sm:text-2xl font-medium transition-all duration-200 hover:text-[var(--color-accent)]',
               isActive ? 'text-[var(--color-accent)]' : 'text-[var(--color-text-primary)]',
             ]}
             style={`transition-delay: ${i * 50}ms`}
