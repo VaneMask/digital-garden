@@ -101,7 +101,7 @@ export default function MobileMenu() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-slate-900/60 backdrop-blur-md z-[65]"
+              className="fixed inset-0 bg-gradient-to-br from-rose-900/50 via-slate-900/60 to-sky-900/50 backdrop-blur-md z-[65]"
             />
 
             {/* Wheel */}
@@ -116,7 +116,7 @@ export default function MobileMenu() {
                 ref={wheelRef}
                 style={{ rotate: smoothRotation }}
                 onPan={handlePan}
-                className="w-full h-full rounded-full border border-white/30 dark:border-slate-500/50 bg-white/40 dark:bg-slate-800/50 backdrop-blur-3xl shadow-[0_0_50px_rgba(0,0,0,0.3)] relative cursor-grab active:cursor-grabbing touch-none"
+                className="w-full h-full rounded-full border border-rose-200/30 dark:border-accent-400/20 bg-white/40 dark:bg-slate-800/50 backdrop-blur-3xl shadow-[0_0_60px_rgba(244,114,158,0.15)] relative cursor-grab active:cursor-grabbing touch-none"
               >
                 {/* Center close button */}
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-slate-100 dark:bg-slate-700 border-4 border-slate-300 dark:border-slate-500 flex items-center justify-center shadow-inner z-10">
@@ -149,8 +149,8 @@ export default function MobileMenu() {
                           onClick={() => setIsOpen(false)}
                           className={`flex items-center justify-center w-full h-full rounded-full transition-all duration-300 ${
                             isActive
-                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_15px_rgba(244,114,158,0.5)] scale-110'
-                              : 'bg-white/80 dark:bg-slate-800/80 text-slate-700 dark:text-slate-200 shadow-md hover:scale-110 border border-rose-200/50 dark:border-slate-600 hover:border-rose-300 dark:hover:border-rose-400/30 hover:shadow-rose-200/30'
+                              ? 'bg-gradient-to-br from-rose-400 via-accent-400 to-sky-400 text-white shadow-[0_0_18px_rgba(244,114,158,0.45)] scale-110'
+                              : 'bg-white/70 dark:bg-slate-800/60 text-slate-600 dark:text-slate-300 shadow-sm hover:scale-110 border border-white/60 dark:border-slate-600/50 hover:border-accent-300/50 dark:hover:border-accent-400/30 hover:shadow-lg hover:shadow-rose-200/20 dark:hover:shadow-rose-900/10'
                           }`}
                         >
                           <span className="text-[11px] font-black">{link.name}</span>
