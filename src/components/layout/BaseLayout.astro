@@ -3,8 +3,6 @@ import Head from '@components/base/Head.astro'
 import Header from '@components/base/Header.astro'
 import Footer from '@components/base/Footer.astro'
 import SplashScreen from '@components/base/SplashScreen'
-import CustomCursor from '@components/base/CustomCursor'
-import BackgroundParticles from '@components/base/BackgroundParticles'
 import '@assets/styles/global.css'
 
 export interface Props {
@@ -43,9 +41,6 @@ const { title, description, image, noindex } = Astro.props
       <Footer />
     </div>
 
-    <!-- Desktop-only creative effects -->
-    <CustomCursor client:load />
-    <BackgroundParticles client:load />
     <!-- Splash Screen (React island) -->
     <SplashScreen client:load />
   </body>
@@ -92,33 +87,11 @@ const { title, description, image, noindex } = Astro.props
     images.forEach((img) => imgObserver.observe(img))
   }
 
-  // Tilt effect for cards
-  function initTiltCards() {
-    document.querySelectorAll('.tilt-card').forEach((card) => {
-      const el = card as HTMLElement
-      el.addEventListener('mousemove', (e) => {
-        const rect = el.getBoundingClientRect()
-        const x = (e as MouseEvent).clientX - rect.left
-        const y = (e as MouseEvent).clientY - rect.top
-        const centerX = rect.width / 2
-        const centerY = rect.height / 2
-        const rotateX = ((y - centerY) / centerY) * -6
-        const rotateY = ((x - centerX) / centerX) * 6
-        el.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02,1.02,1.02)`
-      })
-      el.addEventListener('mouseleave', () => {
-        el.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1,1,1)'
-      })
-    })
-  }
-
   initScrollReveal()
   initLazyImages()
-  initTiltCards()
 
   document.addEventListener('astro:page-load', () => {
     initScrollReveal()
     initLazyImages()
-    initTiltCards()
   })
 </script>
