@@ -2,6 +2,7 @@
 import Head from '@components/base/Head.astro'
 import Header from '@components/base/Header.astro'
 import Footer from '@components/base/Footer.astro'
+import SplashScreen from '@components/base/SplashScreen'
 import '@assets/styles/global.css'
 
 export interface Props {
@@ -18,13 +19,30 @@ const { title, description, image, noindex } = Astro.props
 <html lang="zh-CN">
   <head>
     <Head {title} {description} {image} {noindex} />
+    <!-- Splash screen: hide content until splash finishes -->
+    <style is:inline>
+      #app-root { opacity: 0; visibility: hidden; }
+      html.splash-seen #app-root { opacity: 1 !important; visibility: visible !important; }
+    </style>
+    <script is:inline>
+      try {
+        if (sessionStorage.getItem('splash-seen') === 'true') {
+          document.documentElement.classList.add('splash-seen')
+        }
+      } catch (e) {}
+    </script>
   </head>
   <body class="min-h-screen flex flex-col">
-    <Header />
-    <main class="flex-1 pt-[var(--nav-height)]">
-      <slot />
-    </main>
-    <Footer />
+    <div id="app-root" class="min-h-screen flex flex-col flex-1 transition-opacity duration-500">
+      <Header />
+      <main class="flex-1 pt-[var(--nav-height)]">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <!-- Splash Screen (React island) -->
+    <SplashScreen client:load />
   </body>
 </html>
 
