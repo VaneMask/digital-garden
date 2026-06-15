@@ -1,0 +1,54 @@
+---
+import BaseLayout from '@components/layout/BaseLayout.astro'
+import ToolCard from '@components/tools/ToolCard.astro'
+import ScrollReveal from '@components/ui/ScrollReveal.astro'
+import { TOOL_CATEGORIES } from '@config/constants'
+import { getCollection } from 'astro:content'
+
+const tools = await getCollection('tools')
+const categorizedTools = TOOL_CATEGORIES.map((cat) => ({
+  ...cat,
+  tools: tools.filter((t) => t.data.category === cat.key),
+}))
+
+// Icon emoji mapping
+const categoryEmojis: Record<string, string> = {
+  code: '',
+  sparkles: '',
+  zap: '',
+  palette: '',
+  puzzle: '',
+}
+---
+
+<BaseLayout title="工具">
+  <div class="section-container">
+    <ScrollReveal>
+      <div class="text-center mb-16">
+        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">工具</h1>
+        <p class="mt-3 text-[var(--color-text-secondary)]">我常用的软件和服务。</p>
+      </div>
+    </ScrollReveal>
+
+    <div class="max-w-4xl mx-auto space-y-16 scroll-reveal-stagger">
+      {categorizedTools.map((category) => (
+        <section>
+          <h2 class="text-lg font-semibold text-[var(--color-text-primary)] mb-5 flex items-center gap-2">
+            <span>{categoryEmojis[category.icon] || ''}</span>
+            {category.label}
+            <span class="text-sm font-normal text-[var(--color-text-muted)]">({category.tools.length})</span>
+          </h2>
+          {category.tools.length === 0 ? (
+            <p class="text-sm text-[var(--color-text-muted)] italic">暂无工具，敬请期待。</p>
+          ) : (
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {category.tools.map((tool) => (
+                <ToolCard {...tool.data} />
+              ))}
+            </div>
+          )}
+        </section>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

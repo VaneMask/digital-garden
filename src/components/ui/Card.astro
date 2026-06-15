@@ -1,0 +1,20 @@
+---
+export interface Props {
+  class?: string
+  href?: string
+}
+
+const { class: className = '', href } = Astro.props
+const Tag = href ? 'a' : 'div'
+---
+
+<Tag
+  {...(href ? { href } : {})}
+  class:list={[
+    'glass-card block p-6',
+    href && 'cursor-pointer',
+    className,
+  ]}
+>
+  <slot />
+</Tag>

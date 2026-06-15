@@ -1,0 +1,81 @@
+---
+import Head from '@components/base/Head.astro'
+import Header from '@components/base/Header.astro'
+import Footer from '@components/base/Footer.astro'
+import '@assets/styles/global.css'
+
+export interface Props {
+  title?: string
+  description?: string
+  image?: string
+  noindex?: boolean
+}
+
+const { title, description, image, noindex } = Astro.props
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <Head {title} {description} {image} {noindex} />
+  </head>
+  <body class="min-h-screen flex flex-col">
+    <Header />
+    <main class="flex-1 pt-[var(--nav-height)]">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>
+
+<script>
+  // Scroll reveal observer
+  function initScrollReveal() {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed')
+            observer.unobserve(entry.target)
+          }
+        })
+      },
+      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
+    )
+
+    document.querySelectorAll('.scroll-reveal, .scroll-reveal-stagger').forEach((el) => {
+      observer.observe(el)
+    })
+  }
+
+  // Image lazy load with fade
+  function initLazyImages() {
+    const images = document.querySelectorAll('img.lazy-image')
+    const imgObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const img = entry.target as HTMLImageElement
+            if (img.dataset.src) {
+              img.src = img.dataset.src
+            }
+            img.addEventListener('load', () => img.classList.add('loaded'))
+            imgObserver.unobserve(img)
+          }
+        })
+      },
+      { rootMargin: '100px 0px' }
+    )
+    images.forEach((img) => imgObserver.observe(img))
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    initScrollReveal()
+    initLazyImages()
+  })
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initScrollReveal()
+    initLazyImages()
+  })
+</script>

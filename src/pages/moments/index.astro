@@ -1,0 +1,32 @@
+---
+import BaseLayout from '@components/layout/BaseLayout.astro'
+import MomentCard from '@components/moments/MomentCard.astro'
+import ScrollReveal from '@components/ui/ScrollReveal.astro'
+import { getCollection } from 'astro:content'
+
+const moments = await getCollection('moments')
+moments.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+---
+
+<BaseLayout title="说说">
+  <div class="section-container">
+    <ScrollReveal>
+      <div class="text-center mb-16">
+        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">说说</h1>
+        <p class="mt-3 text-[var(--color-text-secondary)]">碎碎念，日常记录。</p>
+      </div>
+    </ScrollReveal>
+
+    <div class="space-y-6 scroll-reveal-stagger max-w-3xl mx-auto">
+      {
+        moments.length === 0 ? (
+          <p class="text-center text-[var(--color-text-muted)] py-16">暂无说说。</p>
+        ) : (
+          moments.map((moment) => (
+            <MomentCard {...moment.data} />
+          ))
+        )
+      }
+    </div>
+  </div>
+</BaseLayout>

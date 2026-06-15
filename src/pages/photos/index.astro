@@ -1,0 +1,38 @@
+---
+import BaseLayout from '@components/layout/BaseLayout.astro'
+import PhotoCard from '@components/photos/PhotoCard.astro'
+import Lightbox from '@components/ui/Lightbox'
+import MasonryGrid from '@components/ui/MasonryGrid.astro'
+import ScrollReveal from '@components/ui/ScrollReveal.astro'
+import { getCollection } from 'astro:content'
+
+const photos = await getCollection('photos')
+photos.sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime())
+---
+
+<BaseLayout title="照片墙">
+  <div class="section-container">
+    <ScrollReveal>
+      <div class="text-center mb-16">
+        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">照片墙</h1>
+        <p class="mt-3 text-[var(--color-text-secondary)]">用镜头记录生活。</p>
+      </div>
+    </ScrollReveal>
+
+    {
+      photos.length === 0 ? (
+        <p class="text-center text-[var(--color-text-muted)] py-16">暂无照片，敬请期待。</p>
+      ) : (
+        <ScrollReveal>
+          <MasonryGrid class="max-w-7xl mx-auto px-2">
+            {photos.map((photo) => (
+              <PhotoCard {...photo.data} />
+            ))}
+          </MasonryGrid>
+        </ScrollReveal>
+      )
+    }
+  </div>
+
+  <Lightbox client:load />
+</BaseLayout>

@@ -1,0 +1,45 @@
+---
+export interface Props {
+  image: string
+  alt: string
+  description?: string
+  camera?: string
+  lens?: string
+  iso?: number
+  aperture?: string
+  shutter?: string
+}
+
+const { image, alt, description, camera, lens, iso, aperture, shutter } = Astro.props
+---
+
+<div class="break-inside-avoid mb-5 group cursor-pointer" data-lightbox-trigger>
+  <div class="relative overflow-hidden rounded-2xl bg-[var(--color-bg-secondary)]">
+    <img
+      src={image}
+      alt={alt}
+      loading="lazy"
+      class="w-full h-auto transition-all duration-500 group-hover:scale-105 lazy-image"
+      data-lightbox-src={image}
+      data-lightbox-alt={alt}
+      data-lightbox-desc={description || ''}
+      data-lightbox-camera={camera || ''}
+      data-lightbox-lens={lens || ''}
+      data-lightbox-iso={iso?.toString() || ''}
+      data-lightbox-aperture={aperture || ''}
+      data-lightbox-shutter={shutter || ''}
+    />
+
+    {/* Hover overlay */}
+    <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+      <div class="absolute bottom-0 left-0 right-0 p-4">
+        {description && (
+          <p class="text-sm text-white/90 font-medium">{description}</p>
+        )}
+        {camera && (
+          <p class="text-xs text-white/70 mt-1">{camera}{lens && ` + ${lens}`}</p>
+        )}
+      </div>
+    </div>
+  </div>
+</div>

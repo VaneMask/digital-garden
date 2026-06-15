@@ -1,0 +1,62 @@
+---
+export interface Props {
+  content: string
+  images?: string[]
+  tags?: string[]
+  date: Date
+  location?: string
+}
+
+const { content, images, tags, date, location } = Astro.props
+const displayDate = new Intl.DateTimeFormat('zh-CN', {
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+  hour: '2-digit',
+  minute: '2-digit',
+}).format(date)
+---
+
+<div class="glass-card p-6 max-w-2xl mx-auto">
+  {/* Meta line */}
+  <div class="flex items-center gap-3 mb-4">
+    <div class="w-7 h-7 rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center text-white text-[10px] font-bold">
+      V
+    </div>
+    <span class="text-xs text-[var(--color-text-muted)]">{displayDate}</span>
+    {location && (
+      <>
+        <span class="text-[var(--color-text-muted)]">·</span>
+        <span class="text-xs text-[var(--color-text-muted)]">{location}</span>
+      </>
+    )}
+  </div>
+
+  {/* Content */}
+  <p class="text-[var(--color-text-primary)] leading-relaxed whitespace-pre-wrap">{content}</p>
+
+  {/* Images */}
+  {images && images.length > 0 && (
+    <div class={`mt-4 grid gap-2 ${images.length === 1 ? 'grid-cols-1' : 'grid-cols-2'}`}>
+      {images.map((img) => (
+        <img
+          src={img}
+          alt=""
+          loading="lazy"
+          class={`rounded-xl w-full object-cover lazy-image ${images.length === 1 ? 'max-h-80' : 'aspect-square'}`}
+        />
+      ))}
+    </div>
+  )}
+
+  {/* Tags */}
+  {tags && tags.length > 0 && (
+    <div class="flex flex-wrap gap-1.5 mt-3">
+      {tags.map((tag) => (
+        <span class="text-xs px-2 py-0.5 rounded-full bg-[var(--color-accent-bg)] text-[var(--color-accent)]">
+          #{tag}
+        </span>
+      ))}
+    </div>
+  )}
+</div>

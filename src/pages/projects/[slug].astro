@@ -1,0 +1,68 @@
+---
+import BaseLayout from '@components/layout/BaseLayout.astro'
+import Badge from '@components/ui/Badge.astro'
+import { getCollection } from 'astro:content'
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects')
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project },
+  }))
+}
+
+const { project } = Astro.props
+const { data, body } = project
+---
+
+<BaseLayout title={data.title} description={data.description}>
+  <article class="section-container">
+    <div class="prose-container">
+      {/* Header */}
+      <header class="mb-12">
+        <a href="/projects" class="inline-flex items-center gap-1.5 text-sm text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors duration-200 mb-6">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" />
+          </svg>
+          返回项目
+        </a>
+
+        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">{data.title}</h1>
+        <p class="mt-4 text-lg text-[var(--color-text-secondary)] leading-relaxed">{data.description}</p>
+
+        <div class="flex flex-wrap items-center gap-4 mt-6">
+          <time datetime={data.date.toISOString()} class="text-sm text-[var(--color-text-muted)]">
+            {new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long' }).format(data.date)}
+          </time>
+          <div class="flex flex-wrap gap-1.5">
+            {data.techTags.map((tag: string) => (
+              <Badge variant="small">{tag}</Badge>
+            ))}
+          </div>
+        </div>
+
+        <div class="flex items-center gap-4 mt-6">
+          {data.githubUrl && (
+            <a href={data.githubUrl} target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[var(--color-text-primary)] text-[var(--color-bg-primary)] text-sm font-medium hover:opacity-80 transition-opacity duration-200">
+              <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" clip-rule="evenodd"/></svg>
+              GitHub
+            </a>
+          )}
+          {data.demoUrl && (
+            <a href={data.demoUrl} target="_blank" rel="noopener noreferrer"
+               class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-border)] text-[var(--color-text-primary)] text-sm font-medium hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all duration-200">
+              在线预览
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+            </a>
+          )}
+        </div>
+      </header>
+
+      {/* Content */}
+      <div class="prose prose-neutral dark:prose-invert max-w-none">
+        {body && <div set:html={body} />}
+      </div>
+    </div>
+  </article>
+</BaseLayout>
