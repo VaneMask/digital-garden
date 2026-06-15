@@ -1,0 +1,73 @@
+<!-- Pure CSS splash, no JS framework needed -->
+<div id="splash" class="splash-screen fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-[var(--color-bg-primary)]">
+  <div class="relative z-10 flex flex-col items-center">
+    <!-- Avatar with rotating ring -->
+    <div class="relative w-24 h-24 mb-8">
+      <div class="splash-ring absolute -inset-1.5 rounded-full"></div>
+      <div class="relative w-full h-full rounded-full p-[3px] bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+        <img src="/images/avatar.jpg" alt="Avatar" class="w-full h-full rounded-full object-cover" />
+      </div>
+    </div>
+    <h1 class="text-2xl font-black text-[var(--color-text-primary)] mb-2 tracking-[0.2em] uppercase">VaneMask</h1>
+    <p class="text-[10px] font-bold text-[var(--color-text-muted)] tracking-[0.5em] mb-12">INITIALIZING GARDEN</p>
+    <!-- Progress bar -->
+    <div class="w-40 h-[1.5px] bg-[var(--color-bg-secondary)] relative overflow-hidden rounded-full">
+      <div class="splash-bar absolute top-0 left-0 h-full bg-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.8)] rounded-full"></div>
+    </div>
+  </div>
+</div>
+
+<style is:inline>
+  .splash-ring {
+    background: linear-gradient(90deg, #6366f1, #a855f7, #ec4899, #6366f1);
+    background-size: 300% 100%;
+    animation: splash-ring-rotate 2s linear infinite;
+    filter: blur(3px);
+    opacity: 0.6;
+  }
+  .splash-bar {
+    animation: splash-bar-fill 1.8s ease-in-out forwards;
+    width: 0%;
+  }
+  @keyframes splash-ring-rotate {
+    0% { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+  }
+  @keyframes splash-bar-fill {
+    0% { width: 0%; }
+    100% { width: 100%; }
+  }
+  .splash-screen {
+    transition: opacity 0.6s ease, filter 0.6s ease;
+  }
+  .splash-screen.hide {
+    opacity: 0;
+    filter: blur(20px);
+    pointer-events: none;
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    try {
+      if (sessionStorage.getItem('splash-seen') === 'true') {
+        var el = document.getElementById('splash');
+        if (el) el.remove();
+        document.documentElement.classList.add('splash-seen');
+        return;
+      }
+    } catch(e) {}
+
+    // Auto-hide after 2.2s
+    setTimeout(function() {
+      var el = document.getElementById('splash');
+      if (!el) return;
+      el.classList.add('hide');
+      sessionStorage.setItem('splash-seen', 'true');
+      setTimeout(function() {
+        el.remove();
+        document.documentElement.classList.add('splash-seen');
+      }, 600);
+    }, 2200);
+  })();
+</script>
