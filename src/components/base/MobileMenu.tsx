@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, type PanInfo } from 'framer-motion'
 
 const NAV_LINKS = [
@@ -37,6 +37,19 @@ export default function MobileMenu() {
   useEffect(() => {
     if (isOpen) rawRotation.set(0)
   }, [isOpen, rawRotation])
+
+  // Theme toggle
+  const [isDark, setIsDark] = useState(false)
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains('dark'))
+  }, [isOpen])
+  const toggleTheme = useCallback(() => {
+    const html = document.documentElement
+    const next = !html.classList.contains('dark')
+    html.classList.toggle('dark', next)
+    localStorage.setItem('theme', next ? 'dark' : 'light')
+    setIsDark(next)
+  }, [])
 
   // Detect current page for active state
   const [currentPath, setCurrentPath] = useState('/')
@@ -160,6 +173,26 @@ export default function MobileMenu() {
                   )
                 })}
               </motion.div>
+
+              {/* Theme toggle below the wheel */}
+              <motion.button
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 20 }}
+                transition={{ delay: 0.3 }}
+                onClick={toggleTheme}
+                className="absolute bottom-16 left-1/2 -translate-x-1/2 w-12 h-12 rounded-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-xl border border-rose-200/30 dark:border-accent-400/20 shadow-lg flex items-center justify-center text-slate-500 dark:text-slate-300 hover:scale-110 transition-all active:scale-95"
+              >
+                {isDark ? (
+                  <svg className="w-5 h-5 text-amber-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                ) : (
+                  <svg className="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </motion.button>
             </motion.div>
           </>
         )}
