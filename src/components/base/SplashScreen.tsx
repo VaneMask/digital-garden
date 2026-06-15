@@ -45,10 +45,8 @@ export default function SplashScreen() {
                 transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
                 className="absolute -inset-1.5 rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 opacity-60 blur-[3px]"
               />
-              <div className="relative w-full h-full rounded-full p-[3px] bg-white dark:bg-slate-900 shadow-xl">
-                <div className="w-full h-full rounded-full bg-gradient-to-br from-accent-400 to-accent-600 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-white">V</span>
-                </div>
+              <div className="relative w-full h-full rounded-full p-[3px] bg-white dark:bg-slate-900 shadow-xl overflow-hidden">
+                <img src="/images/avatar.jpg" alt="Avatar" className="w-full h-full rounded-full object-cover" />
               </div>
             </div>
 
