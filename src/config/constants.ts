@@ -2,7 +2,7 @@ export const SITE = {
   title: 'Digital Garden',
   name: 'VaneMask',
   url: 'https://vanemask.me',
-  description: 'A personal digital garden — notes, projects, and moments.',
+  description: '生命中的全部偶然，其实都是命中注定。是为宿命。',
   locale: 'zh-CN',
   ogImage: '/images/og-default.webp',
 } as const
