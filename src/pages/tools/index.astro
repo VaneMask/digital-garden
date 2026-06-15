@@ -1,49 +1,42 @@
 ---
 import BaseLayout from '@components/layout/BaseLayout.astro'
-import ToolCard from '@components/tools/ToolCard.astro'
 import ScrollReveal from '@components/ui/ScrollReveal.astro'
 import { TOOL_CATEGORIES } from '@config/constants'
 import { getCollection } from 'astro:content'
 
 const tools = await getCollection('tools')
-const categorizedTools = TOOL_CATEGORIES.map((cat) => ({
-  ...cat,
-  tools: tools.filter((t) => t.data.category === cat.key),
-}))
-
-// Icon emoji mapping
-const categoryEmojis: Record<string, string> = {
-  code: '',
-  sparkles: '',
-  zap: '',
-  palette: '',
-  puzzle: '',
-}
+const cats = TOOL_CATEGORIES.map((c) => ({ ...c, tools: tools.filter((t) => t.data.category === c.key) }))
+const emoji: Record<string, string> = { code: '', sparkles: '', zap: '', palette: '', puzzle: '' }
 ---
 
 <BaseLayout title="工具">
   <div class="section-container">
     <ScrollReveal>
-      <div class="text-center mb-16">
-        <h1 class="text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">工具</h1>
-        <p class="mt-3 text-[var(--color-text-secondary)]">我常用的软件和服务。</p>
+      <div class="text-center mb-20">
+        <p class="text-xs font-medium tracking-[0.2em] text-accent-500 uppercase mb-3">Toolbox</p>
+        <h1 class="text-3xl md:text-4xl font-bold text-ink-100 dark:text-ink-inverted tracking-tight">工具</h1>
+        <p class="mt-3 text-ink-300 dark:text-ink-inverted/50">常用软件和服务</p>
       </div>
     </ScrollReveal>
-
-    <div class="max-w-4xl mx-auto space-y-16 scroll-reveal-stagger">
-      {categorizedTools.map((category) => (
+    <div class="max-w-3xl mx-auto space-y-16 scroll-reveal-stagger">
+      {cats.map((cat) => (
         <section>
-          <h2 class="text-lg font-semibold text-[var(--color-text-primary)] mb-5 flex items-center gap-2">
-            <span>{categoryEmojis[category.icon] || ''}</span>
-            {category.label}
-            <span class="text-sm font-normal text-[var(--color-text-muted)]">({category.tools.length})</span>
+          <h2 class="text-sm font-semibold text-ink-200 dark:text-ink-inverted/60 mb-4 flex items-center gap-2">
+            <span>{emoji[cat.icon] || ''}</span> {cat.label}
           </h2>
-          {category.tools.length === 0 ? (
-            <p class="text-sm text-[var(--color-text-muted)] italic">暂无工具，敬请期待。</p>
+          {cat.tools.length === 0 ? (
+            <p class="text-sm text-ink-300/60 italic">暂无</p>
           ) : (
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {category.tools.map((tool) => (
-                <ToolCard {...tool.data} />
+              {cat.tools.map((t) => (
+                <a href={t.data.url} target="_blank" rel="noopener noreferrer" class="glass-card p-4 flex items-center gap-4 group">
+                  <div class="shrink-0 w-10 h-10 rounded-xl bg-surface-200 dark:bg-surface-800 flex items-center justify-center text-sm font-semibold text-accent-500">{t.data.icon || t.data.name.charAt(0)}</div>
+                  <div class="min-w-0">
+                    <h3 class="text-sm font-medium text-ink-100 dark:text-ink-inverted group-hover:text-accent-500 transition-colors truncate">{t.data.name}</h3>
+                    <p class="text-xs text-ink-300/80 line-clamp-1 mt-0.5">{t.data.description}</p>
+                  </div>
+                  <svg class="shrink-0 w-3.5 h-3.5 text-ink-300/40 group-hover:text-accent-400 transition-all ml-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+                </a>
               ))}
             </div>
           )}

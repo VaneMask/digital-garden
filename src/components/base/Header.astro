@@ -7,61 +7,58 @@ const currentPath = Astro.url.pathname
 
 <header
   id="site-header"
-  class="fixed top-0 left-0 right-0 z-50 h-[var(--nav-height)] transition-all duration-300"
-  class:list={[
-    'bg-[var(--nav-bg)] backdrop-blur-[12px] -webkit-backdrop-blur-[12px]',
-    'border-b border-[var(--color-border)]',
-  ]}
+  class="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-500"
 >
-  <nav class="max-w-7xl mx-auto h-full flex items-center justify-between px-4 md:px-6">
-    <!-- Logo -->
-    <a
-      href="/"
-      class="text-lg font-semibold tracking-tight text-[var(--color-text-primary)] hover:text-[var(--color-accent)] transition-colors duration-200 shrink-0"
-    >
-      {SITE.name}
-    </a>
+  <div class="h-full mx-4 mt-3 md:mx-6 md:mt-4">
+    <div class="glass-surface h-full rounded-2xl px-5 flex items-center justify-between max-w-4xl mx-auto">
+      <!-- Logo -->
+      <a
+        href="/"
+        class="text-[15px] font-semibold tracking-tight text-ink-100 dark:text-ink-inverted hover:text-accent-500 transition-colors duration-300 shrink-0"
+      >
+        {SITE.name}
+      </a>
 
-    <!-- Desktop nav -->
-    <ul class="hidden md:flex items-center gap-1">
-      {NAV_LINKS.map((link) => {
-        const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
-        return (
-          <li>
-            <a
-              href={link.href}
-              class:list={[
-                'relative px-4 py-2 text-sm rounded-full transition-all duration-200',
-                isActive
-                  ? 'text-[var(--color-accent)] bg-[var(--color-accent-bg)] font-medium'
-                  : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[var(--color-bg-secondary)]',
-              ]}
-            >
-              {link.label}
-            </a>
-          </li>
-        )
-      })}
-      <li class="ml-2">
-        <button
-          id="theme-toggle"
-          type="button"
-          class="w-9 h-9 flex items-center justify-center rounded-full text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] hover:bg-[var(--color-bg-secondary)] transition-all duration-200"
-          aria-label="切换主题"
-        >
-          <svg id="sun-icon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-          </svg>
-          <svg id="moon-icon" class="w-5 h-5 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-          </svg>
-        </button>
-      </li>
-    </ul>
-  </nav>
+      <!-- Desktop nav -->
+      <ul class="hidden md:flex items-center gap-0.5">
+        {NAV_LINKS.map((link) => {
+          const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+          return (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  'relative px-3.5 py-2 text-[13px] rounded-xl transition-all duration-300 font-medium',
+                  isActive
+                    ? 'text-accent-600 dark:text-accent-400 bg-accent-50 dark:bg-accent-400/10'
+                    : 'text-ink-300 hover:text-ink-100 dark:text-ink-inverted/50 dark:hover:text-ink-inverted hover:bg-surface-200/60 dark:hover:bg-white/5',
+                ]}
+              >
+                {link.label}
+              </a>
+            </li>
+          )
+        })}
+        <li class="ml-2 pl-2 border-l border-black/5 dark:border-white/10">
+          <button
+            id="theme-toggle"
+            type="button"
+            class="w-8 h-8 flex items-center justify-center rounded-lg text-ink-300 hover:text-ink-100 dark:text-ink-inverted/50 dark:hover:text-ink-inverted hover:bg-surface-200/60 dark:hover:bg-white/5 transition-all duration-200"
+            aria-label="切换主题"
+          >
+            <svg id="sun-icon" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+            </svg>
+            <svg id="moon-icon" class="w-4 h-4 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+            </svg>
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
 </header>
 
-<!-- Mobile: floating trigger + wheel menu (React island) -->
 <MobileMenu client:load />
 
 <script>
@@ -87,24 +84,21 @@ const currentPath = Astro.url.pathname
     updateIcons()
   }
 
-  // Scroll-aware nav background
+  // Nav shadow on scroll
   function setupNavScroll() {
     const header = document.getElementById('site-header')
-    if (!header) return
+    const inner = header?.querySelector('.glass-surface') as HTMLElement
+    if (!inner) return
 
-    const updateNav = () => {
-      const scrolled = window.scrollY > 20
-      if (scrolled) {
-        header.style.boxShadow = '0 4px 30px rgba(0,0,0,0.06)'
-        header.classList.add('dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)]')
+    const update = () => {
+      if (window.scrollY > 20) {
+        inner.style.boxShadow = '0 4px 32px rgba(0,0,0,0.06)'
       } else {
-        header.style.boxShadow = ''
-        header.classList.remove('dark:shadow-[0_4px_30px_rgba(0,0,0,0.3)]')
+        inner.style.boxShadow = ''
       }
     }
-
-    window.addEventListener('scroll', updateNav, { passive: true })
-    updateNav()
+    window.addEventListener('scroll', update, { passive: true })
+    update()
   }
 
   setupTheme()

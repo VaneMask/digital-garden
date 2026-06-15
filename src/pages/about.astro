@@ -3,127 +3,107 @@ import BaseLayout from '@components/layout/BaseLayout.astro'
 import ScrollReveal from '@components/ui/ScrollReveal.astro'
 import { SITE } from '@config/constants'
 
-const timelineItems = [
-  { year: '2026', title: '开始搭建个人数字花园', description: '用 Astro 构建了第一个完整的个人网站。' },
-  { year: '2025', title: '深入学习 Web 开发', description: '系统学习了 React、Node.js 和数据库。' },
-  { year: '2024', title: '进入大学', description: '计算机科学专业，开始系统学习编程。' },
+const timeline = [
+  { year: '2026', title: '搭建个人数字花园', desc: '用 Astro 构建了完整的个人网站' },
+  { year: '2025', title: '深入学习 Web 开发', desc: '系统学习 React、Node.js、数据库' },
+  { year: '2024', title: '大学 · 计算机科学', desc: '开始系统学习编程' },
+]
+
+const interests = [
+  { emoji: '', label: '编程' },
+  { emoji: '', label: '设计' },
+  { emoji: '', label: '摄影' },
+  { emoji: '', label: '阅读' },
 ]
 
 const skills = [
-  { name: 'TypeScript', level: 75 },
-  { name: 'React', level: 70 },
-  { name: 'Node.js', level: 65 },
-  { name: 'Python', level: 70 },
-  { name: 'CSS / 设计', level: 80 },
-  { name: '摄影', level: 60 },
+  { name: 'TypeScript / React', pct: 75 },
+  { name: 'Node.js', pct: 65 },
+  { name: 'Python', pct: 70 },
+  { name: 'CSS / 设计', pct: 80 },
+  { name: '摄影', pct: 60 },
 ]
 ---
 
 <BaseLayout title="关于">
-  <div class="section-container">
-    <div class="prose-container space-y-16 md:space-y-24">
-      {/* Bio */}
-      <ScrollReveal>
-        <section class="text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-accent-400 to-accent-600 p-[3px] shadow-glow overflow-hidden">
-            <img src="/images/avatar.jpg" alt={SITE.name} class="w-full h-full rounded-full object-cover" />
-          </div>
-          <h1 class="mt-8 text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">
-            {SITE.name}
-          </h1>
-          <p class="mt-6 text-lg text-[var(--color-text-secondary)] leading-relaxed max-w-lg mx-auto">
-            计算机科学在读学生。<br/>
-            热爱设计与开发，相信技术可以创造美好。<br/>
-            这里是我的数字花园，记录学习、思考与生活。
-          </p>
-        </section>
-      </ScrollReveal>
+  <div class="section-container prose-container space-y-24 md:space-y-36">
+    <!-- Bio -->
+    <ScrollReveal>
+      <section class="text-center">
+        <div class="w-28 h-28 mx-auto rounded-full ring-1 ring-black/5 dark:ring-white/10 ring-offset-2 ring-offset-surface-100 dark:ring-offset-surface-900 overflow-hidden shadow-card">
+          <img src="/images/avatar.jpg" alt={SITE.name} class="w-full h-full object-cover" />
+        </div>
+        <h1 class="mt-10 text-3xl md:text-4xl font-bold text-ink-100 dark:text-ink-inverted tracking-tight">{SITE.name}</h1>
+        <p class="mt-5 text-ink-300 dark:text-ink-inverted/50 leading-relaxed max-w-md mx-auto">
+          计算机科学在读。热爱设计与开发，相信技术可以创造美好。<br/>这里是我的数字花园，记录学习、思考与生活。
+        </p>
+      </section>
+    </ScrollReveal>
 
-      {/* Interests */}
-      <ScrollReveal>
-        <section>
-          <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-6">兴趣爱好</h2>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
-            {[
-              { emoji: '', label: '编程' },
-              { emoji: '', label: '设计' },
-              { emoji: '', label: '摄影' },
-              { emoji: '', label: '阅读' },
-            ].map((item) => (
-              <div class="glass-card p-4 text-center">
-                <span class="text-2xl">{item.emoji}</span>
-                <p class="mt-2 text-sm font-medium text-[var(--color-text-primary)]">{item.label}</p>
+    <!-- Interests -->
+    <ScrollReveal>
+      <section>
+        <h2 class="text-lg font-semibold text-ink-100 dark:text-ink-inverted mb-6 text-center">兴趣爱好</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3">
+          {interests.map((i) => (
+            <div class="glass-card p-5 text-center">
+              <span class="text-2xl">{i.emoji}</span>
+              <p class="mt-2 text-sm text-ink-300 dark:text-ink-inverted/50">{i.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+    </ScrollReveal>
+
+    <!-- Skills -->
+    <ScrollReveal>
+      <section>
+        <h2 class="text-lg font-semibold text-ink-100 dark:text-ink-inverted mb-6 text-center">技能</h2>
+        <div class="space-y-3 max-w-sm mx-auto">
+          {skills.map((s) => (
+            <div>
+              <div class="flex justify-between mb-1"><span class="text-sm text-ink-200 dark:text-ink-inverted/80">{s.name}</span><span class="text-xs text-ink-300/60">{s.pct}%</span></div>
+              <div class="h-1.5 rounded-full bg-surface-200 dark:bg-surface-800 overflow-hidden">
+                <div class="h-full rounded-full bg-gradient-to-r from-accent-500 to-accent-400 transition-all duration-1000" style={`width:${s.pct}%`} />
               </div>
-            ))}
-          </div>
-        </section>
-      </ScrollReveal>
+            </div>
+          ))}
+        </div>
+      </section>
+    </ScrollReveal>
 
-      {/* Skills */}
-      <ScrollReveal>
-        <section>
-          <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-6">技能</h2>
-          <div class="space-y-4">
-            {skills.map((skill) => (
-              <div>
-                <div class="flex items-center justify-between mb-1.5">
-                  <span class="text-sm font-medium text-[var(--color-text-primary)]">{skill.name}</span>
-                  <span class="text-xs text-[var(--color-text-muted)]">{skill.level}%</span>
-                </div>
-                <div class="h-2 rounded-full bg-[var(--color-bg-secondary)] overflow-hidden">
-                  <div
-                    class="h-full rounded-full bg-gradient-to-r from-accent-400 to-accent-600 transition-all duration-1000"
-                    style={`width: ${skill.level}%`}
-                  />
-                </div>
+    <!-- Timeline -->
+    <ScrollReveal>
+      <section>
+        <h2 class="text-lg font-semibold text-ink-100 dark:text-ink-inverted mb-8 text-center">成长时间轴</h2>
+        <div class="space-y-1 max-w-xs mx-auto">
+          {timeline.map((t) => (
+            <div class="flex gap-5">
+              <div class="shrink-0 w-14 text-right"><span class="text-sm font-medium text-accent-500">{t.year}</span></div>
+              <div class="relative pb-6">
+                <div class="absolute top-1 left-[-10px] w-2 h-2 rounded-full bg-accent-400 ring-2 ring-surface-100 dark:ring-surface-900" />
+                <div class="absolute top-3 left-[-9px] bottom-0 w-px bg-black/5 dark:bg-white/10" />
               </div>
-            ))}
-          </div>
-        </section>
-      </ScrollReveal>
-
-      {/* Timeline */}
-      <ScrollReveal>
-        <section>
-          <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-8">成长时间轴</h2>
-          <div class="space-y-1">
-            {timelineItems.map((item) => (
-              <div class="flex gap-6">
-                <div class="shrink-0 w-16 text-right">
-                  <span class="text-sm font-medium text-[var(--color-accent)]">{item.year}</span>
-                </div>
-                <div class="relative pb-8">
-                  <div class="absolute top-1.5 left-[-12px] w-2 h-2 rounded-full bg-[var(--color-accent)]" />
-                  <div class="absolute top-2 left-[-11px] bottom-0 w-px bg-[var(--color-border)]" />
-                </div>
-                <div class="pb-8">
-                  <h3 class="font-medium text-[var(--color-text-primary)]">{item.title}</h3>
-                  <p class="text-sm text-[var(--color-text-secondary)] mt-1">{item.description}</p>
-                </div>
+              <div class="pb-6">
+                <h3 class="font-medium text-ink-100 dark:text-ink-inverted text-sm">{t.title}</h3>
+                <p class="text-xs text-ink-300/80 dark:text-ink-inverted/40 mt-0.5">{t.desc}</p>
               </div>
-            ))}
-          </div>
-        </section>
-      </ScrollReveal>
+            </div>
+          ))}
+        </div>
+      </section>
+    </ScrollReveal>
 
-      {/* Contact */}
-      <ScrollReveal>
-        <section class="text-center">
-          <h2 class="text-xl font-semibold text-[var(--color-text-primary)] mb-6">联系我</h2>
-          <p class="text-[var(--color-text-secondary)] mb-6">
-            如果你对我的项目感兴趣，或者想聊聊设计和开发，欢迎联系我。
-          </p>
-          <a
-            href="mailto:hi@vanemask.me"
-            class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-[var(--color-accent)] text-white text-sm font-medium hover:opacity-90 transition-opacity duration-200 shadow-glow-sm"
-          >
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
-            </svg>
-            发送邮件
-          </a>
-        </section>
-      </ScrollReveal>
-    </div>
+    <!-- Contact -->
+    <ScrollReveal>
+      <section class="text-center">
+        <h2 class="text-lg font-semibold text-ink-100 dark:text-ink-inverted mb-4">联系我</h2>
+        <p class="text-ink-300 dark:text-ink-inverted/50 mb-8 text-sm">感兴趣的话欢迎联系交流</p>
+        <a href="mailto:hi@vanemask.me" class="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-ink-100 dark:bg-ink-inverted text-surface-100 dark:text-surface-900 text-sm font-medium hover:opacity-80 transition-opacity">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75"/></svg>
+          发送邮件
+        </a>
+      </section>
+    </ScrollReveal>
   </div>
 </BaseLayout>
