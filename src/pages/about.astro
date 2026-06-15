@@ -25,10 +25,8 @@ const skills = [
       {/* Bio */}
       <ScrollReveal>
         <section class="text-center">
-          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-accent-400 to-accent-600 p-[3px] shadow-glow">
-            <div class="w-full h-full rounded-full bg-[var(--color-bg-primary)] flex items-center justify-center">
-              <span class="text-3xl font-bold gradient-text">{SITE.name.charAt(0)}</span>
-            </div>
+          <div class="w-24 h-24 mx-auto rounded-full bg-gradient-to-br from-accent-400 to-accent-600 p-[3px] shadow-glow overflow-hidden">
+            <img src="/images/avatar.jpg" alt={SITE.name} class="w-full h-full rounded-full object-cover" />
           </div>
           <h1 class="mt-8 text-3xl md:text-4xl font-bold text-[var(--color-text-primary)] tracking-tight">
             {SITE.name}
