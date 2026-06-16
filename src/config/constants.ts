@@ -11,7 +11,7 @@ export const NAV_LINKS = [
   { href: '/', label: '首页' },
   { href: '/projects', label: '项目' },
   { href: '/tools', label: '工具' },
-  { href: '/archive', label: '归档' },
+  { href: '/archive', label: '记录' },
   { href: '/photos', label: '照片墙' },
   { href: '/moments', label: '说说' },
   { href: '/about', label: '关于' },

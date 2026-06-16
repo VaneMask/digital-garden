@@ -5,7 +5,7 @@ const NAV_LINKS = [
   { name: '首页', href: '/' },
   { name: '项目', href: '/projects' },
   { name: '工具', href: '/tools' },
-  { name: '归档', href: '/archive' },
+  { name: '记录', href: '/archive' },
   { name: '照片墙', href: '/photos' },
   { name: '说说', href: '/moments' },
   { name: '关于', href: '/about' },
