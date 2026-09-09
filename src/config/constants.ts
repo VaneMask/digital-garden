@@ -1,8 +1,8 @@
 ﻿export const SITE = {
   title: 'Digital Garden',
-  name: 'VaneMask',
+  name: '吱秋',
   url: 'https://vanemask.me',
-  description: '生命中的全部偶然，其实都是命中注定。是为宿命。',
+  description: '吱吱吱吱吱',
   locale: 'zh-CN',
   ogImage: '/images/og-default.webp',
 } as const
