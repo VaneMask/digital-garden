@@ -105,11 +105,11 @@ export default function AboutClient({ activities }: { activities: Activity[] }) 
           <div className="space-y-8" style={{ animation: 'fadeUpIn 0.4s ease' }}>
             <div className="prose prose-lg max-w-none text-ink-200 dark:text-ink-inverted/80 leading-relaxed">
               <p className="text-base md:text-lg leading-relaxed">
-                你好，我是 VaneMask。计算机科学在读学生，热爱设计与开发。
+                你好，我是 VaneMask。一个靠 Stack Overflow 和 ChatGPT 活着的计算机科学学生。
               </p>
               <p className="text-sm md:text-base leading-relaxed mt-4">
-                我相信技术可以创造美好，目前专注于 Web 全栈开发与系统设计。
-                课余时间喜欢摄影、阅读和探索新工具。这个网站就是我的数字花园，用来记录学习、思考和生活中的点点滴滴。
+                白天是代码搬运工，晚上是 Bug 制造机。擅长把简单的问题复杂化，然后再用复杂的方法解决它。
+                这个网站是我的数字花园，也是我假装自己很勤奋的证据，这里有我的学习笔记、思考片段（胡思乱想）和生活记录（摸鱼日常）。
               </p>
               <h3 className="text-lg font-bold text-ink-100 dark:text-ink-inverted mt-8 mb-4">技能方向</h3>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 text-sm">
