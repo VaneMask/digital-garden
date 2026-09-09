@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from '@components/layout/BaseLayout.astro'
 import AboutClient from '@components/about/AboutClient'
 import { getCollection } from 'astro:content'
@@ -24,8 +24,8 @@ const activities = [
 ---
 
 <BaseLayout title="关于">
-  <div class="section-container prose-container">
-    <div class="bg-white/60 dark:bg-white/[0.02] backdrop-blur-xl rounded-[2.5rem] shadow-card dark:shadow-card-dark border border-black/5 dark:border-white/5 overflow-hidden">
+  <div class="section-container max-w-3xl mx-auto">
+    <div class="bg-white/60 dark:bg-white/[0.02] backdrop-blur-xl rounded-[2.5rem] shadow-card dark:shadow-card-dark border border-black/5 dark:border-white/5 overflow-hidden max-w-full">
       <AboutClient activities={activities} client:load />
     </div>
 

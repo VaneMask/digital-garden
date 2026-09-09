@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react'
+﻿import { useState, useMemo } from 'react'
 
 interface Activity {
   date: string
@@ -127,13 +127,13 @@ export default function AboutClient({ activities }: { activities: Activity[] }) 
         {tab === 'activity' && (
           <div style={{ animation: 'fadeUpIn 0.4s ease' }}>
             {/* Heatmap */}
-            <div className="mb-10 p-4 md:p-6 bg-surface-200/60 dark:bg-surface-800/40 rounded-2xl border border-black/5 dark:border-white/5">
+            <div className="mb-10 p-4 md:p-6 bg-surface-200/60 dark:bg-surface-800/40 rounded-2xl border border-black/5 dark:border-white/5 overflow-hidden">
               <h3 className="text-sm font-bold text-ink-200 dark:text-ink-inverted/70 mb-5 flex items-center gap-2">
                 <svg className="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5"/></svg>
                 {activities.length} 次更新 · 过去一年
               </h3>
               <div className="overflow-x-auto pb-2">
-                <div className="min-w-[700px]">
+                <div className="min-w-[600px]">
                   <div className="flex gap-[3px] text-[9px] text-ink-300/60 mb-1 h-3">
                     {monthLabels().map((m) => (
                       <div key={m.idx} className="w-[10px] md:w-[12px] shrink-0" style={{ marginLeft: m.idx === 0 ? 0 : `calc(${m.idx} * 13px - ${m.idx * 1}px)` }}>

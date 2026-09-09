@@ -1,0 +1,30 @@
+---
+import { getCollection } from 'astro:content'
+
+const posts = await getCollection('posts')
+const projects = await getCollection('projects')
+const photos = await getCollection('photos')
+
+const stats = [
+  { label: '文章', value: posts.length, icon: '📝', color: 'accent' },
+  { label: '项目', value: projects.length, icon: '🚀', color: 'sky' },
+  { label: '照片', value: photos.length, icon: '📸', color: 'rose' },
+  { label: '在线天数', value: Math.floor((Date.now() - new Date('2024-06-15').getTime()) / (1000 * 60 * 60 * 24)), icon: '⏱️', color: 'violet' },
+]
+---
+
+<section class="py-8 px-6 animate-fade-up-delay">
+  <div class="max-w-xl mx-auto">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+      {stats.map((stat) => (
+        <div class={`glass-card p-4 text-center group hover:scale-105 transition-transform duration-300`}>
+          <div class="text-2xl mb-1">{stat.icon}</div>
+          <div class={`text-2xl font-bold bg-gradient-to-r from-${stat.color}-400 to-${stat.color}-600 bg-clip-text text-transparent`}>
+            {stat.value}
+          </div>
+          <div class="text-xs text-ink-300 dark:text-ink-inverted/40 mt-1">{stat.label}</div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>

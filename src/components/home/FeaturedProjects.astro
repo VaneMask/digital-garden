@@ -1,0 +1,108 @@
+﻿---
+import { getCollection } from 'astro:content'
+import ScrollReveal from '@components/ui/ScrollReveal.astro'
+
+const projects = (await getCollection('projects'))
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+  .slice(0, 3)
+
+---
+
+{projects.length > 0 && (
+  <section class="py-12 md:py-16 px-6">
+    <div class="glass-card p-8 md:p-10">
+      <ScrollReveal>
+        <div class="flex items-end justify-between mb-12">
+          <div>
+            <p class="text-xs font-medium tracking-[0.2em] text-accent-500 uppercase mb-2">Projects</p>
+            <h2 class="text-2xl md:text-3xl font-bold text-ink-100 dark:text-ink-inverted tracking-tight">
+              精选项目
+            </h2>
+          </div>
+          <a
+            href="/projects"
+            class="text-sm text-ink-300 dark:text-ink-inverted/40 hover:text-accent-500 transition-colors duration-200 hidden sm:block"
+          >
+            查看全部 →
+          </a>
+        </div>
+      </ScrollReveal>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 scroll-reveal-stagger">
+        {projects.map((project) => (
+          <a href={`/projects/${project.id}`} class="group block glass-card card-3d overflow-hidden p-5" data-tilt>
+            <div class="aspect-[16/10] -mx-5 -mt-5 mb-5 bg-surface-200 dark:bg-surface-800 overflow-hidden relative">
+              {project.data.coverImage ? (
+                <img src={project.data.coverImage} alt={project.data.title} class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-[1.05]" loading="lazy" />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center bg-gradient-to-br from-accent-50 to-accent-100 dark:from-accent-400/10 dark:to-accent-400/5">
+                  <span class="text-5xl font-bold gradient-text opacity-30">{project.data.title.charAt(0)}</span>
+                </div>
+              )}
+              {/* Hover shine effect */}
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style="background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.15), transparent 50%);"></div>
+            </div>
+            <h3 class="text-base font-semibold text-ink-100 dark:text-ink-inverted group-hover:text-accent-500 transition-colors duration-300">
+              {project.data.title}
+            </h3>
+            <p class="mt-1.5 text-sm text-ink-300 dark:text-ink-inverted/50 line-clamp-2 leading-relaxed">
+              {project.data.summary || project.data.description}
+            </p>
+            <div class="flex items-center gap-2 mt-4 pt-3 border-t border-black/3 dark:border-white/5">
+              {project.data.techTags.slice(0, 3).map((tag) => (
+                <span class="text-[11px] px-2 py-0.5 rounded-md bg-surface-200 dark:bg-surface-800 text-ink-300 dark:text-ink-inverted/40">
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <div class="mt-8 text-center sm:hidden">
+        <a href="/projects" class="text-sm text-ink-300 dark:text-ink-inverted/40 hover:text-accent-500 transition-colors duration-200">
+          查看全部 →
+        </a>
+      </div>
+    </div>
+  </section>
+)}
+
+<script>
+  // 3D Tilt effect for featured project cards
+  function init3DTilt() {
+    const cards = document.querySelectorAll('[data-tilt]');
+
+    cards.forEach((card) => {
+      const element = card as HTMLElement;
+
+      element.addEventListener('mousemove', (e) => {
+        const rect = element.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const centerX = rect.width / 2;
+        const centerY = rect.height / 2;
+
+        const rotateX = ((y - centerY) / centerY) * -8;
+        const rotateY = ((x - centerX) / centerX) * 8;
+
+        element.style.setProperty('--tilt-x', `${rotateX}deg`);
+        element.style.setProperty('--tilt-y', `${rotateY}deg`);
+
+        const mouseX = (x / rect.width) * 100;
+        const mouseY = (y / rect.height) * 100;
+        element.style.setProperty('--mouse-x', `${mouseX}%`);
+        element.style.setProperty('--mouse-y', `${mouseY}%`);
+      });
+
+      element.addEventListener('mouseleave', () => {
+        element.style.setProperty('--tilt-x', '0deg');
+        element.style.setProperty('--tilt-y', '0deg');
+      });
+    });
+  }
+
+  init3DTilt();
+  document.addEventListener('astro:page-load', init3DTilt);
+</script>

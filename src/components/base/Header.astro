@@ -8,6 +8,7 @@ const currentPath = Astro.url.pathname
 <header
   id="site-header"
   class="fixed top-0 left-0 right-0 z-50 h-16 transition-all duration-500"
+  data-hide-on-scroll
 >
   <div class="h-full mx-4 mt-3 md:mx-6 md:mt-4">
     <div class="glass-surface h-full rounded-2xl px-5 flex items-center justify-between max-w-4xl mx-auto">
@@ -20,17 +21,20 @@ const currentPath = Astro.url.pathname
       </a>
 
       <!-- Desktop nav -->
-      <ul class="hidden md:flex items-center gap-0.5">
+      <ul class="hidden md:flex items-center gap-0.5 relative">
+        <div id="nav-indicator" class="absolute h-8 rounded-xl bg-accent-50 dark:bg-accent-400/10 transition-all duration-300 ease-out-expo" style="opacity: 0;"></div>
         {NAV_LINKS.map((link) => {
           const isActive = currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
           return (
             <li>
               <a
                 href={link.href}
+                data-nav-link
+                data-active={isActive}
                 class:list={[
-                  'relative px-3.5 py-2 text-[13px] rounded-xl transition-all duration-300 font-medium',
+                  'relative z-10 px-3.5 py-2 text-[13px] rounded-xl transition-all duration-300 font-medium',
                   isActive
-                    ? 'text-accent-600 dark:text-accent-400 bg-accent-50 dark:bg-accent-400/10'
+                    ? 'text-accent-600 dark:text-accent-400'
                     : 'text-ink-300 hover:text-ink-100 dark:text-ink-inverted/50 dark:hover:text-ink-inverted hover:bg-surface-200/60 dark:hover:bg-white/5',
                 ]}
               >
@@ -84,28 +88,86 @@ const currentPath = Astro.url.pathname
     updateIcons()
   }
 
-  // Nav shadow on scroll
+  // Nav shadow on scroll + Auto hide/show
   function setupNavScroll() {
     const header = document.getElementById('site-header')
     const inner = header?.querySelector('.glass-surface') as HTMLElement
     if (!inner) return
 
+    let lastScrollY = window.scrollY
+    let ticking = false
+
     const update = () => {
-      if (window.scrollY > 20) {
+      const currentScrollY = window.scrollY
+
+      // Shadow on scroll
+      if (currentScrollY > 20) {
         inner.style.boxShadow = '0 4px 32px rgba(0,0,0,0.06)'
       } else {
         inner.style.boxShadow = ''
       }
+
+      // Auto hide/show
+      if (currentScrollY > 100) {
+        if (currentScrollY > lastScrollY) {
+          // Scrolling down - hide
+          header!.style.transform = 'translateY(-100%)'
+        } else {
+          // Scrolling up - show
+          header!.style.transform = 'translateY(0)'
+        }
+      } else {
+        header!.style.transform = 'translateY(0)'
+      }
+
+      lastScrollY = currentScrollY
+      ticking = false
     }
-    window.addEventListener('scroll', update, { passive: true })
+
+    window.addEventListener('scroll', () => {
+      if (!ticking) {
+        requestAnimationFrame(update)
+        ticking = true
+      }
+    }, { passive: true })
+
     update()
+  }
+
+  // Animated nav indicator
+  function setupNavIndicator() {
+    const indicator = document.getElementById('nav-indicator') as HTMLElement
+    const activeLink = document.querySelector('[data-nav-link][data-active="true"]') as HTMLElement
+
+    if (!indicator || !activeLink) return
+
+    function updateIndicator(target: HTMLElement) {
+      const rect = target.getBoundingClientRect()
+      const parent = target.parentElement?.parentElement?.getBoundingClientRect()
+      if (!parent) return
+
+      indicator.style.opacity = '1'
+      indicator.style.width = `${rect.width}px`
+      indicator.style.left = `${rect.left - parent.left}px`
+    }
+
+    // Initial position
+    updateIndicator(activeLink)
+
+    // Update on hover
+    document.querySelectorAll('[data-nav-link]').forEach((link) => {
+      link.addEventListener('mouseenter', () => updateIndicator(link as HTMLElement))
+      link.addEventListener('mouseleave', () => updateIndicator(activeLink))
+    })
   }
 
   setupTheme()
   setupNavScroll()
+  setupNavIndicator()
 
   document.addEventListener('astro:page-load', () => {
     setupTheme()
     setupNavScroll()
+    setupNavIndicator()
   })
 </script>

@@ -1,5 +1,5 @@
-<!-- Pure CSS splash, no JS framework needed -->
-<div id="splash" class="splash-screen fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-surface-100 dark:bg-surface-900">
+﻿<!-- Pure CSS splash, no JS framework needed -->
+<div id="splash" class="splash-screen fixed inset-0 z-[100000] flex flex-col items-center justify-center bg-gradient-to-br from-[#e8eaf5] via-[#ece6f2] to-[#e0ecf8] dark:from-surface-900 dark:via-[#1e1a24] dark:to-[#151a20]">
   <div class="relative z-10 flex flex-col items-center">
     <!-- Avatar with rotating ring -->
     <div class="relative w-24 h-24 mb-8">
@@ -26,7 +26,7 @@
     opacity: 0.6;
   }
   .splash-bar {
-    animation: splash-bar-fill 1.8s ease-in-out forwards;
+    animation: splash-bar-fill 1.4s ease-in-out forwards;
     width: 0%;
   }
   @keyframes splash-ring-rotate {
@@ -58,7 +58,7 @@
       }
     } catch(e) {}
 
-    // Auto-hide after 2.2s
+    // Auto-hide after 1.6s
     setTimeout(function() {
       var el = document.getElementById('splash');
       if (!el) return;
@@ -68,6 +68,6 @@
         el.remove();
         document.documentElement.classList.add('splash-seen');
       }, 600);
-    }, 2200);
+    }, 1600);
   })();
 </script>

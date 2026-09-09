@@ -1,4 +1,4 @@
-export const SITE = {
+﻿export const SITE = {
   title: 'Digital Garden',
   name: 'VaneMask',
   url: 'https://vanemask.me',
@@ -25,7 +25,7 @@ export const SOCIAL_LINKS = [
 export const TOOL_CATEGORIES = [
   { key: 'dev', label: '开发工具', icon: 'code' },
   { key: 'ai', label: 'AI 工具', icon: 'sparkles' },
-  { key: 'productivity', label: '效率工具', icon: 'zap' },
+  { key: 'diy', label: '自制工具', icon: 'wrench' },
   { key: 'design', label: '设计工具', icon: 'palette' },
   { key: 'browser', label: '浏览器插件', icon: 'puzzle' },
 ] as const

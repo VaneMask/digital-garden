@@ -1,0 +1,68 @@
+﻿---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '@components/layout/BaseLayout.astro'
+
+export async function getStaticPaths() {
+  const posts = await getCollection('posts', ({ data }) => !data.draft)
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.mdx?$/, '') },
+    props: { post },
+  }))
+}
+
+const { post } = Astro.props
+const { Content } = await render(post)
+
+const formatDate = (date: Date) =>
+  new Intl.DateTimeFormat('zh-CN', { year: 'numeric', month: 'long', day: 'numeric' }).format(date)
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} image={post.data.coverImage}>
+  <article class="section-container prose-container">
+    <!-- Header -->
+    <header class="mb-12 text-center">
+      <p class="text-xs font-medium tracking-[0.2em] text-accent-500 uppercase mb-3">Archive</p>
+      <h1 class="text-3xl md:text-4xl font-bold text-ink-100 dark:text-ink-inverted tracking-tight leading-tight">
+        {post.data.title}
+      </h1>
+      <p class="mt-4 text-ink-300 dark:text-ink-inverted/50 leading-relaxed">
+        {post.data.description}
+      </p>
+      <div class="flex items-center justify-center gap-4 mt-6">
+        <time datetime={post.data.date.toISOString()} class="text-xs text-ink-300/60 dark:text-ink-inverted/30">
+          {formatDate(post.data.date)}
+        </time>
+        {post.data.tags.length > 0 && (
+          <div class="flex items-center gap-1.5">
+            {post.data.tags.map((tag) => (
+              <span class="text-[11px] px-2 py-0.5 rounded-md bg-surface-200 dark:bg-surface-800 text-ink-300 dark:text-ink-inverted/40">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </div>
+    </header>
+
+    <!-- Divider -->
+    <div class="w-12 h-px bg-accent-300/40 mx-auto mb-12" />
+
+    <!-- Content -->
+    <div class="prose prose-slate dark:prose-invert prose-sm md:prose-base max-w-none
+      prose-headings:tracking-tight prose-headings:font-semibold
+      prose-a:text-accent-500 prose-a:no-underline hover:prose-a:underline
+      prose-code:text-accent-600 dark:prose-code:text-accent-400
+      prose-pre:bg-surface-900 dark:prose-pre:bg-surface-800
+      prose-img:rounded-2xl prose-img:shadow-card
+      prose-blockquote:border-accent-300 prose-blockquote:text-ink-200 dark:prose-blockquote:text-ink-inverted/60">
+      <Content />
+    </div>
+
+    <!-- Back link -->
+    <div class="mt-16 pt-8 border-t border-black/5 dark:border-white/5 text-center">
+      <a href="/archive" class="text-sm text-ink-300 dark:text-ink-inverted/40 hover:text-accent-500 transition-colors duration-200">
+        &larr; 返回归档
+      </a>
+    </div>
+  </article>
+</BaseLayout>

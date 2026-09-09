@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+﻿import { useState, useEffect, useRef, useCallback } from 'react'
 import { motion, AnimatePresence, useMotionValue, useSpring, useTransform, type PanInfo } from 'framer-motion'
 
 const NAV_LINKS = [
@@ -93,12 +93,12 @@ export default function MobileMenu() {
                 setIsOpen(true)
               }
             }}
-            className="fixed top-1/2 right-0 -translate-y-1/2 w-12 h-28 bg-gradient-to-b from-rose-400 via-accent-400 to-sky-400 backdrop-blur-xl rounded-l-full shadow-[-5px_0_20px_rgba(244,114,158,0.5)] z-[60] flex items-center justify-center border-y border-l border-white/30 touch-none"
+            className="fixed top-[20%] right-0 -translate-y-1/2 w-11 h-24 bg-white/30 dark:bg-white/[0.06] backdrop-blur-xl rounded-l-2xl shadow-[-2px_0_16px_rgba(0,0,0,0.06)] z-[60] flex items-center justify-center border-y border-l border-white/40 dark:border-white/[0.08] touch-none"
           >
-            <div className="flex flex-col gap-1.5 items-center justify-center mr-2">
-              <div className="w-1.5 h-1.5 bg-white/90 rounded-full" />
-              <div className="w-1.5 h-1.5 bg-white/90 rounded-full" />
-              <div className="w-1.5 h-1.5 bg-white/90 rounded-full" />
+            <div className="flex flex-col gap-[5px] items-center justify-center mr-1.5">
+              <div className="w-4 h-[2px] bg-slate-500/50 dark:bg-white/50 rounded-full" />
+              <div className="w-3 h-[2px] bg-slate-400/40 dark:bg-white/35 rounded-full" />
+              <div className="w-4 h-[2px] bg-slate-500/50 dark:bg-white/50 rounded-full" />
             </div>
           </motion.button>
         )}

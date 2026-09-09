@@ -1,8 +1,12 @@
----
+﻿---
 import Head from '@components/base/Head.astro'
 import Header from '@components/base/Header.astro'
 import Footer from '@components/base/Footer.astro'
 import SplashScreen from '@components/base/SplashScreen.astro'
+import Fireflies from '@components/ui/Fireflies'
+import CursorFollower from '@components/ui/CursorFollower'
+import ClickSparkle from '@components/ui/ClickSparkle'
+import CardTilt from '@components/ui/CardTilt'
 import '@assets/styles/global.css'
 
 export interface Props {
@@ -33,6 +37,18 @@ const { title, description, image, noindex } = Astro.props
     </script>
   </head>
   <body class="min-h-screen flex flex-col">
+  <!-- Global blue-pink gradient background -->
+  <div class="global-gradient-bg" aria-hidden="true">
+    <div class="global-gradient-blob global-gradient-blob--rose"></div>
+    <div class="global-gradient-blob global-gradient-blob--sky"></div>
+    <div class="global-gradient-blob global-gradient-blob--accent"></div>
+  </div>
+
+    <Fireflies client:load />
+    <CursorFollower client:load />
+    <ClickSparkle client:load />
+    <CardTilt client:load />
+
     <div id="app-root" class="min-h-screen flex flex-col flex-1 transition-opacity duration-500">
       <Header />
       <main class="flex-1 pt-[var(--nav-height)]">

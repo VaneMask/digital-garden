@@ -1,4 +1,4 @@
----
+﻿---
 import BaseLayout from '@components/layout/BaseLayout.astro'
 import ScrollReveal from '@components/ui/ScrollReveal.astro'
 import { getCollection } from 'astro:content'
@@ -37,7 +37,7 @@ posts.forEach((p) => {
               <div class="absolute left-3 md:left-1/2 w-2 h-2 rounded-full bg-accent-400 ring-2 ring-surface-100 dark:ring-surface-900 -translate-x-1/2 mt-1.5 z-10" />
               <div class="md:w-1/2 md:pl-10 ml-7 md:ml-0">
                 <time datetime={post.data.date.toISOString()} class="text-xs text-ink-300/60 mb-1.5 block md:hidden">{d}</time>
-                <a href={`/archive/`} class="block glass-card p-4 group">
+                <a href={`/archive/${post.id}`} class="block glass-card p-4 group">
                   <h3 class="text-sm font-medium text-ink-100 dark:text-ink-inverted group-hover:text-accent-500 transition-colors">{post.data.title}</h3>
                   <p class="text-xs text-ink-300/70 mt-1 line-clamp-2">{post.data.description}</p>
                   {post.data.tags.length > 0 && (

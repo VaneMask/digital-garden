@@ -1,8 +1,16 @@
----
+﻿---
 import BaseLayout from '@components/layout/BaseLayout.astro'
 import HeroSection from '@components/home/HeroSection.astro'
+import StatsPanel from '@components/home/StatsPanel.astro'
+import LatestPosts from '@components/home/LatestPosts.astro'
+import FeaturedProjects from '@components/home/FeaturedProjects.astro'
 ---
 
 <BaseLayout>
-  <HeroSection />
+  <div class="max-w-4xl mx-auto">
+    <HeroSection />
+    <StatsPanel />
+    <LatestPosts />
+    <FeaturedProjects />
+  </div>
 </BaseLayout>
