@@ -7,7 +7,7 @@ import Fireflies from '@components/ui/Fireflies'
 import CursorFollower from '@components/ui/CursorFollower'
 import ClickSparkle from '@components/ui/ClickSparkle'
 import CardTilt from '@components/ui/CardTilt'
-import InteractiveDog from '@components/InteractiveDog'
+import InteractiveFrog from '@components/InteractiveFrog'
 import '@assets/styles/global.css'
 
 export interface Props {
@@ -49,7 +49,7 @@ const { title, description, image, noindex } = Astro.props
     <CursorFollower client:load />
     <ClickSparkle client:load />
     <CardTilt client:load />
-    <InteractiveDog client:load />
+    <InteractiveFrog client:load />
 
     <div id="app-root" class="min-h-screen flex flex-col flex-1 transition-opacity duration-500">
       <Header />
