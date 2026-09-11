@@ -13,7 +13,54 @@ export default function TodoList() {
   // 初始加载：优先从云端加载，如果失败则使用本地数据
   useEffect(() => {
     loadTodos()
+
+    // 设置实时订阅
+    const userId = getUserId()
+    const channel = supabase
+      .channel('todos-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'todos',
+          filter: `device_id=eq.${userId}`
+        },
+        (payload) => {
+          handleRealtimeChange(payload)
+        }
+      )
+      .subscribe()
+
+    // 清理订阅
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
+
+  // 处理实时变更
+  const handleRealtimeChange = (payload: any) => {
+    if (payload.eventType === 'INSERT') {
+      const newTodo = {
+        id: payload.new.id,
+        text: payload.new.text,
+        done: payload.new.done
+      }
+      setTodos(prev => {
+        // 避免重复添加
+        if (prev.some(t => t.id === newTodo.id)) return prev
+        return [...prev, newTodo]
+      })
+    } else if (payload.eventType === 'UPDATE') {
+      setTodos(prev => prev.map(t =>
+        t.id === payload.new.id
+          ? { id: payload.new.id, text: payload.new.text, done: payload.new.done }
+          : t
+      ))
+    } else if (payload.eventType === 'DELETE') {
+      setTodos(prev => prev.filter(t => t.id !== payload.old.id))
+    }
+  }
 
   // 自动保存到云端
   useEffect(() => {

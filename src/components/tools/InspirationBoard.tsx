@@ -13,7 +13,54 @@ export default function InspirationBoard() {
   // 初始加载：优先从云端加载，如果失败则使用本地数据
   useEffect(() => {
     loadNotes()
+
+    // 设置实时订阅
+    const userId = getUserId()
+    const channel = supabase
+      .channel('inspirations-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'inspirations',
+          filter: `device_id=eq.${userId}`
+        },
+        (payload) => {
+          handleRealtimeChange(payload)
+        }
+      )
+      .subscribe()
+
+    // 清理订阅
+    return () => {
+      supabase.removeChannel(channel)
+    }
   }, [])
+
+  // 处理实时变更
+  const handleRealtimeChange = (payload: any) => {
+    if (payload.eventType === 'INSERT') {
+      const newNote = {
+        id: payload.new.id,
+        text: payload.new.text,
+        time: payload.new.time
+      }
+      setNotes(prev => {
+        // 避免重复添加
+        if (prev.some(n => n.id === newNote.id)) return prev
+        return [newNote, ...prev]
+      })
+    } else if (payload.eventType === 'UPDATE') {
+      setNotes(prev => prev.map(n =>
+        n.id === payload.new.id
+          ? { id: payload.new.id, text: payload.new.text, time: payload.new.time }
+          : n
+      ))
+    } else if (payload.eventType === 'DELETE') {
+      setNotes(prev => prev.filter(n => n.id !== payload.old.id))
+    }
+  }
 
   // 自动保存到本地
   useEffect(() => {
