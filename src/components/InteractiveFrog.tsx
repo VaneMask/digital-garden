@@ -100,11 +100,11 @@ export default function InteractiveFrog() {
 
       {/* 奶蛙图片 */}
       <img
-        src="/images/naiwa.jpg"
+        src="/images/naiwa-front-transparent.png"
         alt="奶蛙"
-        className="w-32 h-32 object-contain drop-shadow-2xl pointer-events-none select-none"
+        className="w-40 h-40 object-contain drop-shadow-2xl pointer-events-none select-none"
         style={{
-          filter: mood === 'excited' ? 'brightness(1.1)' : 'none'
+          filter: mood === 'excited' ? 'brightness(1.1) drop-shadow(0 0 10px rgba(255,255,0,0.5))' : 'none'
         }}
       />
 
