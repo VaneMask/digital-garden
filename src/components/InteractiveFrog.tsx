@@ -149,7 +149,7 @@ export default function InteractiveFrog() {
 
       {/* 奶蛙图片 */}
       <img
-        src="/images/naiwa.jpg"
+        src="/images/naiwa-transparent.png"
         alt="奶蛙"
         className="relative w-48 h-48 object-contain drop-shadow-2xl pointer-events-none"
         style={{
