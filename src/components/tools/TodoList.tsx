@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase, getUserId } from '@/lib/supabase'
 
-interface Todo { id: number; text: string; done: boolean }
+interface Todo { id: number; text: string; done: boolean; created_at?: string }
 
 const STORAGE_KEY = 'diy-todos'
 
@@ -44,7 +44,8 @@ export default function TodoList() {
       const newTodo = {
         id: payload.new.id,
         text: payload.new.text,
-        done: payload.new.done
+        done: payload.new.done,
+        created_at: payload.new.created_at
       }
       setTodos(prev => {
         // 避免重复添加
@@ -54,7 +55,7 @@ export default function TodoList() {
     } else if (payload.eventType === 'UPDATE') {
       setTodos(prev => prev.map(t =>
         t.id === payload.new.id
-          ? { id: payload.new.id, text: payload.new.text, done: payload.new.done }
+          ? { id: payload.new.id, text: payload.new.text, done: payload.new.done, created_at: payload.new.created_at }
           : t
       ))
     } else if (payload.eventType === 'DELETE') {
@@ -138,12 +139,12 @@ export default function TodoList() {
 
       if (error) throw error
 
-      setTodos([...todos, { id: data.id, text: data.text, done: data.done }])
+      setTodos([...todos, { id: data.id, text: data.text, done: data.done, created_at: data.created_at }])
       setInput('')
     } catch (error) {
       console.error('添加失败:', error)
       // 添加失败时使用本地ID
-      setTodos([...todos, { id: Date.now(), text: input.trim(), done: false }])
+      setTodos([...todos, { id: Date.now(), text: input.trim(), done: false, created_at: new Date().toISOString() }])
       setInput('')
     }
   }
@@ -200,7 +201,19 @@ export default function TodoList() {
             <button onClick={() => toggle(t.id)} className={`w-5 h-5 rounded border-2 flex items-center justify-center shrink-0 transition-all ${t.done ? 'bg-accent-500 border-accent-500' : 'border-ink-300/30 hover:border-accent-400'}`}>
               {t.done && <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}><path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" /></svg>}
             </button>
-            <span className={`flex-1 text-sm ${t.done ? 'line-through text-ink-300/40' : 'text-ink-100 dark:text-ink-inverted'}`}>{t.text}</span>
+            <div className="flex-1 min-w-0">
+              <span className={`block text-sm ${t.done ? 'line-through text-ink-300/40' : 'text-ink-100 dark:text-ink-inverted'}`}>{t.text}</span>
+              {t.created_at && (
+                <span className="text-[10px] text-ink-300/40">
+                  {new Date(t.created_at).toLocaleString('zh-CN', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                  })}
+                </span>
+              )}
+            </div>
             <button onClick={() => remove(t.id)} className="text-ink-300/30 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100">
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
             </button>

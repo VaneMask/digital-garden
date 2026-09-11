@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { supabase, getUserId } from '@/lib/supabase'
 
-interface Note { id: number; text: string; time: string }
+interface Note { id: number; text: string; time: string; created_at?: string }
 
 const STORAGE_KEY = 'diy-notes'
 
@@ -44,7 +44,8 @@ export default function InspirationBoard() {
       const newNote = {
         id: payload.new.id,
         text: payload.new.text,
-        time: payload.new.time
+        time: payload.new.time,
+        created_at: payload.new.created_at
       }
       setNotes(prev => {
         // 避免重复添加
@@ -54,7 +55,7 @@ export default function InspirationBoard() {
     } else if (payload.eventType === 'UPDATE') {
       setNotes(prev => prev.map(n =>
         n.id === payload.new.id
-          ? { id: payload.new.id, text: payload.new.text, time: payload.new.time }
+          ? { id: payload.new.id, text: payload.new.text, time: payload.new.time, created_at: payload.new.created_at }
           : n
       ))
     } else if (payload.eventType === 'DELETE') {
@@ -139,12 +140,12 @@ export default function InspirationBoard() {
 
       if (error) throw error
 
-      setNotes([{ id: data.id, text: data.text, time: data.time }, ...notes])
+      setNotes([{ id: data.id, text: data.text, time: data.time, created_at: data.created_at }, ...notes])
       setInput('')
     } catch (error) {
       console.error('添加失败:', error)
       // 添加失败时使用本地ID
-      setNotes([{ id: Date.now(), text: input.trim(), time }, ...notes])
+      setNotes([{ id: Date.now(), text: input.trim(), time, created_at: new Date().toISOString() }, ...notes])
       setInput('')
     }
   }
@@ -176,7 +177,14 @@ export default function InspirationBoard() {
       <div className="space-y-2 max-h-60 overflow-y-auto">
         {notes.map((n) => (
           <div key={n.id} className="flex items-start gap-2 p-2.5 rounded-lg bg-surface-200/40 dark:bg-surface-800/40 group">
-            <span className="text-[10px] text-ink-300/40 shrink-0 mt-0.5">{n.time}</span>
+            <span className="text-[10px] text-ink-300/40 shrink-0 mt-0.5">
+              {n.created_at ? new Date(n.created_at).toLocaleString('zh-CN', {
+                month: '2-digit',
+                day: '2-digit',
+                hour: '2-digit',
+                minute: '2-digit'
+              }) : n.time}
+            </span>
             <p className="flex-1 text-sm text-ink-100 dark:text-ink-inverted leading-relaxed">{n.text}</p>
             <button onClick={() => remove(n.id)} className="text-ink-300/30 hover:text-red-500 transition-colors opacity-0 group-hover:opacity-100 shrink-0">
               <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
