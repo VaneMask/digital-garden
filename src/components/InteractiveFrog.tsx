@@ -2,33 +2,10 @@ import { useState, useEffect, useRef } from 'react'
 
 export default function InteractiveFrog() {
   const [position, setPosition] = useState({ x: 150, y: 150 })
-  const [state, setState] = useState<'idle' | 'walking' | 'jumping' | 'excited'>('idle')
+  const [state, setState] = useState<'idle' | 'walking' | 'waving'>('idle')
   const [direction, setDirection] = useState<'left' | 'right'>('right')
-  const [squish, setSquish] = useState(1)
-  const [rotation, setRotation] = useState(0)
   const frogRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef({ x: 150, y: 150 })
-  const animationRef = useRef<number>(0)
-  const idleAnimationRef = useRef<number>(0)
-
-  // 呼吸动画（idle时）
-  useEffect(() => {
-    if (state === 'idle') {
-      let time = 0
-      const breathe = () => {
-        time += 0.02
-        const breathScale = 1 + Math.sin(time) * 0.03
-        setSquish(breathScale)
-        idleAnimationRef.current = requestAnimationFrame(breathe)
-      }
-      idleAnimationRef.current = requestAnimationFrame(breathe)
-      return () => {
-        if (idleAnimationRef.current) cancelAnimationFrame(idleAnimationRef.current)
-      }
-    } else {
-      if (idleAnimationRef.current) cancelAnimationFrame(idleAnimationRef.current)
-    }
-  }, [state])
 
   // 自动随机移动
   useEffect(() => {
@@ -44,85 +21,39 @@ export default function InteractiveFrog() {
       }
     }
 
-    const interval = setInterval(randomMove, 4000)
+    const interval = setInterval(randomMove, 5000)
     return () => clearInterval(interval)
   }, [state])
 
-  // 移动动画
+  // 移动逻辑
   useEffect(() => {
-    if (state === 'walking' || state === 'jumping') {
-      const dx = targetRef.current.x - position.x
-      const dy = targetRef.current.y - position.y
-      const distance = Math.sqrt(dx * dx + dy * dy)
+    if (state === 'walking') {
+      const interval = setInterval(() => {
+        const dx = targetRef.current.x - position.x
+        const dy = targetRef.current.y - position.y
+        const distance = Math.sqrt(dx * dx + dy * dy)
 
-      if (distance > 10) {
-        setDirection(dx > 0 ? 'right' : 'left')
-
-        // 行走时左右摇摆
-        if (state === 'walking') {
-          const speed = 2
+        if (distance > 5) {
+          setDirection(dx > 0 ? 'right' : 'left')
+          const speed = 1.5
           const ratio = speed / distance
-
           setPosition(prev => ({
             x: prev.x + dx * ratio,
             y: prev.y + dy * ratio
           }))
-
-          // 摇摆效果
-          setRotation(Math.sin(Date.now() * 0.01) * 5)
+        } else {
+          setState('idle')
         }
-        // 跳跃
-        else if (state === 'jumping') {
-          // 起跳拉伸
-          setSquish(1.3)
-          setTimeout(() => {
-            setPosition(targetRef.current)
-            setSquish(0.7) // 落地压扁
-            setTimeout(() => {
-              setSquish(1)
-              setState('idle')
-              setRotation(0)
-            }, 200)
-          }, 400)
-        }
-      } else {
-        setState('idle')
-        setRotation(0)
-      }
-
-      animationRef.current = requestAnimationFrame(() => {})
-    }
-
-    return () => {
-      if (animationRef.current) cancelAnimationFrame(animationRef.current)
+      }, 20)
+      return () => clearInterval(interval)
     }
   }, [position, state])
 
-  // 点击互动
+  // 点击互动 - 挥手
   const handleClick = () => {
-    setState('excited')
-    // 兴奋跳动
-    setSquish(0.8)
-    setTimeout(() => setSquish(1.2), 100)
-    setTimeout(() => setSquish(0.9), 200)
-    setTimeout(() => {
-      setSquish(1)
-      setState('idle')
-    }, 2000)
+    setState('waving')
+    setTimeout(() => setState('idle'), 2000)
   }
-
-  // 跟随鼠标
-  const handleMouseMove = (e: MouseEvent) => {
-    if (e.shiftKey && (state === 'idle' || state === 'walking')) {
-      targetRef.current = { x: e.clientX - 100, y: e.clientY - 100 }
-      setState('jumping')
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-    return () => window.removeEventListener('mousemove', handleMouseMove)
-  }, [state])
 
   return (
     <div
@@ -132,80 +63,125 @@ export default function InteractiveFrog() {
       style={{
         left: `${position.x}px`,
         top: `${position.y}px`,
-        transform: `scaleX(${direction === 'left' ? -1 : 1}) scaleY(${squish}) rotate(${rotation}deg)`,
-        transition: state === 'jumping' ? 'all 0.4s cubic-bezier(0.45, 0, 0.55, 1)' : state === 'walking' ? 'left 0.05s, top 0.05s, transform 0.1s' : 'transform 0.1s'
+        transform: `scaleX(${direction === 'left' ? -1 : 1})`,
+        transition: 'left 0.02s, top 0.02s'
       }}
-      title="按住 Shift 键移动鼠标，奶蛙会跳过来！点击我！"
+      title="点击奶蛙互动！"
     >
-      {/* 影子 */}
-      <div
-        className="absolute bottom-2 left-1/2 -translate-x-1/2 bg-black rounded-full blur-xl transition-all"
-        style={{
-          width: `${120 * (1 / squish)}px`,
-          height: '20px',
-          opacity: state === 'jumping' ? 0.1 : 0.25
-        }}
-      />
+      {/* 奶蛙容器 - 使用CSS分层模拟肢体动作 */}
+      <div className="relative w-48 h-48">
+        {/* 影子 */}
+        <div
+          className="absolute bottom-0 left-1/2 -translate-x-1/2 bg-black rounded-full blur-lg"
+          style={{
+            width: '100px',
+            height: '15px',
+            opacity: 0.2
+          }}
+        />
 
-      {/* 奶蛙图片 */}
-      <img
-        src="/images/naiwa-transparent.png"
-        alt="奶蛙"
-        className="relative w-48 h-48 object-contain drop-shadow-2xl pointer-events-none"
-        style={{
-          filter: state === 'excited' ? 'brightness(1.15) drop-shadow(0 0 20px rgba(255,255,100,0.8))' : 'none'
-        }}
-      />
-
-      {/* 呱呱气泡 */}
-      {state === 'excited' && (
-        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-white rounded-2xl px-4 py-2 shadow-xl animate-bounce border-2 border-yellow-300">
-          <span className="text-xl font-bold text-yellow-600">呱呱! 🐸</span>
-          <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-white" />
+        {/* 主体图片 - 作为背景层 */}
+        <div className="absolute inset-0">
+          <img
+            src="/images/naiwa-transparent.png"
+            alt="奶蛙"
+            className="w-full h-full object-contain drop-shadow-2xl"
+          />
         </div>
-      )}
 
-      {/* 爱心（跳跃时） */}
-      {state === 'jumping' && (
-        <>
-          <div className="absolute -top-8 left-8 text-3xl animate-float-up">💕</div>
-          <div className="absolute -top-6 right-10 text-2xl animate-float-up-delay">💕</div>
-        </>
-      )}
-
-      {/* 行走时的脚印 */}
-      {state === 'walking' && (
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-2xl opacity-40">
-          👣
+        {/* 左臂覆盖层 - 模拟手臂动画 */}
+        <div
+          className="absolute left-[15%] top-[35%] w-[20%] h-[25%] origin-right"
+          style={{
+            animation: state === 'walking'
+              ? 'swing-left-arm 0.6s ease-in-out infinite'
+              : state === 'waving'
+              ? 'wave-arm 0.5s ease-in-out infinite'
+              : 'breathe-arm 3s ease-in-out infinite'
+          }}
+        >
+          {/* 使用渐变遮罩模拟手臂 */}
+          <div className="w-full h-full" style={{
+            background: 'radial-gradient(ellipse at center, rgba(255,220,100,0) 0%, rgba(255,220,100,0) 100%)',
+          }}></div>
         </div>
-      )}
 
-      {/* 跳跃特效 */}
-      {state === 'jumping' && squish > 1 && (
-        <>
-          <div className="absolute bottom-0 left-4 text-3xl animate-fade-out">💨</div>
-          <div className="absolute bottom-0 right-4 text-3xl animate-fade-out">💨</div>
-        </>
-      )}
+        {/* 右臂覆盖层 */}
+        <div
+          className="absolute right-[15%] top-[35%] w-[20%] h-[25%] origin-left"
+          style={{
+            animation: state === 'walking'
+              ? 'swing-right-arm 0.6s ease-in-out infinite'
+              : state === 'waving'
+              ? 'wave-arm 0.5s ease-in-out infinite 0.25s'
+              : 'breathe-arm 3s ease-in-out infinite 0.3s'
+          }}
+        >
+          <div className="w-full h-full"></div>
+        </div>
+
+        {/* 身体呼吸效果 */}
+        {state === 'idle' && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              animation: 'body-breathe 3s ease-in-out infinite'
+            }}
+          />
+        )}
+
+        {/* 行走时的弹跳 */}
+        {state === 'walking' && (
+          <div
+            className="absolute inset-0 pointer-events-none"
+            style={{
+              animation: 'body-bounce 0.6s ease-in-out infinite'
+            }}
+          />
+        )}
+
+        {/* 挥手气泡 */}
+        {state === 'waving' && (
+          <div className="absolute -top-16 left-1/2 -translate-x-1/2 bg-white rounded-2xl px-4 py-2 shadow-xl animate-bounce border-2 border-yellow-300">
+            <span className="text-xl font-bold text-yellow-600">👋 嗨！</span>
+          </div>
+        )}
+      </div>
 
       <style>{`
-        @keyframes float-up {
-          0% { transform: translateY(0) scale(0.5); opacity: 0; }
-          50% { opacity: 1; }
-          100% { transform: translateY(-40px) scale(1.2); opacity: 0; }
+        /* 手臂摆动动画 - 行走时 */
+        @keyframes swing-left-arm {
+          0%, 100% { transform: rotate(-15deg); }
+          50% { transform: rotate(15deg); }
         }
-        @keyframes fade-out {
-          0% { opacity: 1; transform: scale(0.5); }
-          100% { opacity: 0; transform: scale(1.5); }
+        @keyframes swing-right-arm {
+          0%, 100% { transform: rotate(15deg); }
+          50% { transform: rotate(-15deg); }
         }
-        .animate-float-up {
-          animation: float-up 1s ease-out forwards;
+
+        /* 挥手动画 */
+        @keyframes wave-arm {
+          0%, 100% { transform: rotate(0deg); }
+          25% { transform: rotate(-30deg); }
+          75% { transform: rotate(30deg); }
         }
-        .animate-float-up-delay {
-          animation: float-up 1s ease-out 0.2s forwards;
+
+        /* 呼吸时手臂微动 */
+        @keyframes breathe-arm {
+          0%, 100% { transform: rotate(0deg) translateY(0); }
+          50% { transform: rotate(2deg) translateY(-2px); }
         }
-        .animate-fade-out {
-          animation: fade-out 0.5s ease-out forwards;
+
+        /* 身体呼吸 */
+        @keyframes body-breathe {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.02) translateY(-2px); }
+        }
+
+        /* 行走弹跳 */
+        @keyframes body-bounce {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
         }
       `}</style>
     </div>
