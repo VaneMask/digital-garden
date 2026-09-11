@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase, getDeviceId } from '@/lib/supabase'
 
 interface Note { id: number; text: string; time: string }
 
@@ -7,22 +8,116 @@ const STORAGE_KEY = 'diy-notes'
 export default function InspirationBoard() {
   const [notes, setNotes] = useState<Note[]>([])
   const [input, setInput] = useState('')
+  const [syncing, setSyncing] = useState(false)
 
+  // 初始加载：优先从云端加载，如果失败则使用本地数据
   useEffect(() => {
-    try { const saved = localStorage.getItem(STORAGE_KEY); if (saved) setNotes(JSON.parse(saved)) } catch {}
+    loadNotes()
   }, [])
 
-  useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(notes)) }, [notes])
+  // 自动保存到本地
+  useEffect(() => {
+    if (notes.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(notes))
+    }
+  }, [notes])
 
-  const add = () => {
-    if (!input.trim()) return
-    const now = new Date()
-    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
-    setNotes([{ id: Date.now(), text: input.trim(), time }, ...notes])
-    setInput('')
+  const loadNotes = async () => {
+    setSyncing(true)
+    try {
+      const deviceId = getDeviceId()
+      const { data, error } = await supabase
+        .from('inspirations')
+        .select('*')
+        .eq('device_id', deviceId)
+        .order('id', { ascending: false })
+
+      if (error) throw error
+
+      if (data && data.length > 0) {
+        // 云端有数据，使用云端数据
+        setNotes(data.map(item => ({
+          id: item.id,
+          text: item.text,
+          time: item.time
+        })))
+      } else {
+        // 云端没有数据，尝试从本地恢复
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY)
+          if (saved) {
+            const localNotes = JSON.parse(saved)
+            setNotes(localNotes)
+            // 将本地数据同步到云端
+            await syncLocalToCloud(localNotes)
+          }
+        } catch {}
+      }
+    } catch (error) {
+      console.error('加载失败，使用本地数据:', error)
+      // 加载失败，使用本地数据
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY)
+        if (saved) setNotes(JSON.parse(saved))
+      } catch {}
+    } finally {
+      setSyncing(false)
+    }
   }
 
-  const remove = (id: number) => setNotes(notes.filter((n) => n.id !== id))
+  const syncLocalToCloud = async (localNotes: Note[]) => {
+    const deviceId = getDeviceId()
+    for (const note of localNotes) {
+      await supabase.from('inspirations').insert({
+        text: note.text,
+        time: note.time,
+        device_id: deviceId
+      })
+    }
+  }
+
+  const add = async () => {
+    if (!input.trim()) return
+
+    const now = new Date()
+    const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
+    const deviceId = getDeviceId()
+
+    try {
+      const { data, error } = await supabase
+        .from('inspirations')
+        .insert({ text: input.trim(), time, device_id: deviceId })
+        .select()
+        .single()
+
+      if (error) throw error
+
+      setNotes([{ id: data.id, text: data.text, time: data.time }, ...notes])
+      setInput('')
+    } catch (error) {
+      console.error('添加失败:', error)
+      // 添加失败时使用本地ID
+      setNotes([{ id: Date.now(), text: input.trim(), time }, ...notes])
+      setInput('')
+    }
+  }
+
+  const remove = async (id: number) => {
+    try {
+      const { error } = await supabase
+        .from('inspirations')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setNotes(notes.filter((n) => n.id !== id))
+    } catch (error) {
+      console.error('删除失败:', error)
+      // 删除失败也在本地删除
+      setNotes(notes.filter((n) => n.id !== id))
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -43,6 +138,12 @@ export default function InspirationBoard() {
         ))}
       </div>
       {notes.length === 0 && <p className="text-xs text-ink-300/40 text-center py-4">随时记录你的灵感 ✨</p>}
+      {syncing && (
+        <p className="text-[10px] text-ink-300/40 text-center flex items-center justify-center gap-1">
+          <span className="inline-block w-2 h-2 bg-accent-500 rounded-full animate-pulse"></span>
+          正在同步...
+        </p>
+      )}
     </div>
   )
 }

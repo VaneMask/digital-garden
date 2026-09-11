@@ -1,4 +1,5 @@
-﻿import { useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
+import { supabase, getDeviceId } from '@/lib/supabase'
 
 interface Todo { id: number; text: string; done: boolean }
 
@@ -7,21 +8,137 @@ const STORAGE_KEY = 'diy-todos'
 export default function TodoList() {
   const [todos, setTodos] = useState<Todo[]>([])
   const [input, setInput] = useState('')
+  const [syncing, setSyncing] = useState(false)
 
+  // 初始加载：优先从云端加载，如果失败则使用本地数据
   useEffect(() => {
-    try { const saved = localStorage.getItem(STORAGE_KEY); if (saved) setTodos(JSON.parse(saved)) } catch {}
+    loadTodos()
   }, [])
 
-  useEffect(() => { localStorage.setItem(STORAGE_KEY, JSON.stringify(todos)) }, [todos])
+  // 自动保存到云端
+  useEffect(() => {
+    if (todos.length > 0) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
+    }
+  }, [todos])
 
-  const add = () => {
-    if (!input.trim()) return
-    setTodos([...todos, { id: Date.now(), text: input.trim(), done: false }])
-    setInput('')
+  const loadTodos = async () => {
+    setSyncing(true)
+    try {
+      const deviceId = getDeviceId()
+      const { data, error } = await supabase
+        .from('todos')
+        .select('*')
+        .eq('device_id', deviceId)
+        .order('id', { ascending: true })
+
+      if (error) throw error
+
+      if (data && data.length > 0) {
+        // 云端有数据，使用云端数据
+        setTodos(data.map(item => ({
+          id: item.id,
+          text: item.text,
+          done: item.done
+        })))
+      } else {
+        // 云端没有数据，尝试从本地恢复
+        try {
+          const saved = localStorage.getItem(STORAGE_KEY)
+          if (saved) {
+            const localTodos = JSON.parse(saved)
+            setTodos(localTodos)
+            // 将本地数据同步到云端
+            await syncLocalToCloud(localTodos)
+          }
+        } catch {}
+      }
+    } catch (error) {
+      console.error('加载失败，使用本地数据:', error)
+      // 加载失败，使用本地数据
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY)
+        if (saved) setTodos(JSON.parse(saved))
+      } catch {}
+    } finally {
+      setSyncing(false)
+    }
   }
 
-  const toggle = (id: number) => setTodos(todos.map((t) => t.id === id ? { ...t, done: !t.done } : t))
-  const remove = (id: number) => setTodos(todos.filter((t) => t.id !== id))
+  const syncLocalToCloud = async (localTodos: Todo[]) => {
+    const deviceId = getDeviceId()
+    for (const todo of localTodos) {
+      await supabase.from('todos').insert({
+        text: todo.text,
+        done: todo.done,
+        device_id: deviceId
+      })
+    }
+  }
+
+  const add = async () => {
+    if (!input.trim()) return
+
+    const deviceId = getDeviceId()
+    const newTodo = { text: input.trim(), done: false, device_id: deviceId }
+
+    try {
+      const { data, error } = await supabase
+        .from('todos')
+        .insert(newTodo)
+        .select()
+        .single()
+
+      if (error) throw error
+
+      setTodos([...todos, { id: data.id, text: data.text, done: data.done }])
+      setInput('')
+    } catch (error) {
+      console.error('添加失败:', error)
+      // 添加失败时使用本地ID
+      setTodos([...todos, { id: Date.now(), text: input.trim(), done: false }])
+      setInput('')
+    }
+  }
+
+  const toggle = async (id: number) => {
+    const todo = todos.find(t => t.id === id)
+    if (!todo) return
+
+    const newDone = !todo.done
+
+    try {
+      const { error } = await supabase
+        .from('todos')
+        .update({ done: newDone })
+        .eq('id', id)
+
+      if (error) throw error
+
+      setTodos(todos.map((t) => t.id === id ? { ...t, done: newDone } : t))
+    } catch (error) {
+      console.error('更新失败:', error)
+      // 更新失败也在本地更新，等待下次同步
+      setTodos(todos.map((t) => t.id === id ? { ...t, done: newDone } : t))
+    }
+  }
+
+  const remove = async (id: number) => {
+    try {
+      const { error } = await supabase
+        .from('todos')
+        .delete()
+        .eq('id', id)
+
+      if (error) throw error
+
+      setTodos(todos.filter((t) => t.id !== id))
+    } catch (error) {
+      console.error('删除失败:', error)
+      // 删除失败也在本地删除
+      setTodos(todos.filter((t) => t.id !== id))
+    }
+  }
 
   return (
     <div className="space-y-3">
@@ -43,7 +160,12 @@ export default function TodoList() {
           </div>
         ))}
       </div>
-      {todos.length > 0 && <p className="text-[10px] text-ink-300/40 text-right">{todos.filter(t => t.done).length}/{todos.length} 已完成</p>}
+      {todos.length > 0 && (
+        <p className="text-[10px] text-ink-300/40 text-right flex items-center justify-end gap-1">
+          {syncing && <span className="inline-block w-2 h-2 bg-accent-500 rounded-full animate-pulse"></span>}
+          {todos.filter(t => t.done).length}/{todos.length} 已完成
+        </p>
+      )}
     </div>
   )
 }
