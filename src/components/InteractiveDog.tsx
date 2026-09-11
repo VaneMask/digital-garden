@@ -7,7 +7,7 @@ export default function InteractiveDog() {
   const [mood, setMood] = useState<'happy' | 'excited' | 'playful'>('happy')
   const dogRef = useRef<HTMLDivElement>(null)
   const targetRef = useRef({ x: 100, y: 100 })
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number>(0)
 
   // 自动随机移动
   useEffect(() => {
