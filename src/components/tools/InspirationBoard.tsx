@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase, getDeviceId } from '@/lib/supabase'
+import { supabase, getUserId } from '@/lib/supabase'
 
 interface Note { id: number; text: string; time: string }
 
@@ -25,11 +25,11 @@ export default function InspirationBoard() {
   const loadNotes = async () => {
     setSyncing(true)
     try {
-      const deviceId = getDeviceId()
+      const userId = getUserId()
       const { data, error } = await supabase
         .from('inspirations')
         .select('*')
-        .eq('device_id', deviceId)
+        .eq('device_id', userId)
         .order('id', { ascending: false })
 
       if (error) throw error
@@ -66,12 +66,12 @@ export default function InspirationBoard() {
   }
 
   const syncLocalToCloud = async (localNotes: Note[]) => {
-    const deviceId = getDeviceId()
+    const userId = getUserId()
     for (const note of localNotes) {
       await supabase.from('inspirations').insert({
         text: note.text,
         time: note.time,
-        device_id: deviceId
+        device_id: userId
       })
     }
   }
@@ -81,12 +81,12 @@ export default function InspirationBoard() {
 
     const now = new Date()
     const time = `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`
-    const deviceId = getDeviceId()
+    const userId = getUserId()
 
     try {
       const { data, error } = await supabase
         .from('inspirations')
-        .insert({ text: input.trim(), time, device_id: deviceId })
+        .insert({ text: input.trim(), time, device_id: userId })
         .select()
         .single()
 

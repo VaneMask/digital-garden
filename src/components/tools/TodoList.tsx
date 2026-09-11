@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { supabase, getDeviceId } from '@/lib/supabase'
+import { supabase, getUserId } from '@/lib/supabase'
 
 interface Todo { id: number; text: string; done: boolean }
 
@@ -25,11 +25,11 @@ export default function TodoList() {
   const loadTodos = async () => {
     setSyncing(true)
     try {
-      const deviceId = getDeviceId()
+      const userId = getUserId()
       const { data, error } = await supabase
         .from('todos')
         .select('*')
-        .eq('device_id', deviceId)
+        .eq('device_id', userId)
         .order('id', { ascending: true })
 
       if (error) throw error
@@ -66,12 +66,12 @@ export default function TodoList() {
   }
 
   const syncLocalToCloud = async (localTodos: Todo[]) => {
-    const deviceId = getDeviceId()
+    const userId = getUserId()
     for (const todo of localTodos) {
       await supabase.from('todos').insert({
         text: todo.text,
         done: todo.done,
-        device_id: deviceId
+        device_id: userId
       })
     }
   }
@@ -79,8 +79,8 @@ export default function TodoList() {
   const add = async () => {
     if (!input.trim()) return
 
-    const deviceId = getDeviceId()
-    const newTodo = { text: input.trim(), done: false, device_id: deviceId }
+    const userId = getUserId()
+    const newTodo = { text: input.trim(), done: false, device_id: userId }
 
     try {
       const { data, error } = await supabase

@@ -5,13 +5,7 @@ const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)
 
-// 获取或生成设备唯一ID
-export function getDeviceId(): string {
-  const key = 'device-id'
-  let id = localStorage.getItem(key)
-  if (!id) {
-    id = `device-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
-    localStorage.setItem(key, id)
-  }
-  return id
+// 使用固定的用户ID，所有设备共享数据
+export function getUserId(): string {
+  return 'shared-user'
 }
